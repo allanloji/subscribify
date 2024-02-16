@@ -3,6 +3,7 @@ import { Button, FileInput, IconButton, Spacer } from "../ui";
 import { Plus, Trash2 } from "lucide-react";
 import TextInput from "../ui/TextInput";
 import * as S from "./Newsletters.styles";
+import { uploadFile } from "@/utils/uploadFile";
 
 type Recipient = {
   value: string;
@@ -15,7 +16,7 @@ type NewsletterForm = {
 };
 
 function Newsletters() {
-  const { register, handleSubmit, control, watch, formState } =
+  const { register, handleSubmit, control, formState } =
     useForm<NewsletterForm>({
       defaultValues: { recipients: [{ value: "" }] },
     });
@@ -32,10 +33,8 @@ function Newsletters() {
     },
   });
 
-  console.log(watch("file"));
-
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = async ({ file, name, recipients }: NewsletterForm) => {
+    const fileKey = await uploadFile(file[0]);
   };
 
   return (
