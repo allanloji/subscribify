@@ -11,10 +11,14 @@ import { NewslettersService } from './newsletters.service';
 import { CreateNewsletterDto } from './dto/create-newsletter.dto';
 import { UpdateNewsletterDto } from './dto/update-newsletter.dto';
 import { UnsubscribeNewsletterDto } from './dto/unsubscribe-newsletter.dto';
+import EmailService from 'src/email/email.service';
 
 @Controller('newsletters')
 export class NewslettersController {
-  constructor(private newslettersService: NewslettersService) {}
+  constructor(
+    private newslettersService: NewslettersService,
+    private emailService: EmailService,
+  ) {}
 
   @Get()
   async findAll() {
@@ -50,5 +54,10 @@ export class NewslettersController {
     @Body() unsubscribeNewsletterDto: UnsubscribeNewsletterDto,
   ) {
     return this.newslettersService.unsubscribe(id, unsubscribeNewsletterDto);
+  }
+
+  @Post(':id/send')
+  async send(@Param('id') id: string) {
+    return this.emailService.sendMail();
   }
 }
