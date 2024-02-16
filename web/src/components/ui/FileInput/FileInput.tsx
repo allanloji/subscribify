@@ -8,17 +8,13 @@ interface TextInputProps {
   placeholder?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
-  ref: React.Ref<HTMLInputElement>;
+  error?: string;
 }
 
-function FileInput({
-  label,
-  name,
-  placeholder,
-  onChange,
-  onBlur,
-  ref,
-}: TextInputProps) {
+function FileInput(
+  { label, name, placeholder, onChange, onBlur, error }: TextInputProps,
+  ref?: React.Ref<HTMLInputElement>
+) {
   return (
     <>
       {label ? <S.Label htmlFor={name}>{label}</S.Label> : null}
@@ -26,12 +22,19 @@ function FileInput({
       <S.Input
         type="file"
         accept="image/png, document/pdf"
+        name={name}
         id={name}
         placeholder={placeholder}
         onChange={onChange}
         onBlur={onBlur}
         ref={ref}
       />
+      {error ? (
+        <>
+          <Spacer size={0.5} />
+          <S.ErrorMessage>{error}</S.ErrorMessage>
+        </>
+      ) : null}
     </>
   );
 }

@@ -7,10 +7,11 @@ interface SpacerProps {
 }
 
 const Spacer = styled.div<SpacerProps>`
-  ${({ horizontal, size }) =>
+  ${({ horizontal, size = 1 }) =>
     horizontal
       ? css`
           width: ${size}rem;
+          display: inline-block;
         `
       : css`
           height: ${size}rem;
