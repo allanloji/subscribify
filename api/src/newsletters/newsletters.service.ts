@@ -38,7 +38,13 @@ export class NewslettersService {
     try {
       const newsletter = await this.prisma.newsletter.update({
         where: { id },
-        data: updateNewsletterDto,
+        data: {
+          name: updateNewsletterDto.name,
+          recipients: {
+            set: updateNewsletterDto.recipients,
+          },
+          ...(updateNewsletterDto.file && { file: updateNewsletterDto.file }),
+        },
       });
       return newsletter;
     } catch (e) {

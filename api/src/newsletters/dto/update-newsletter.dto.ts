@@ -1,3 +1,11 @@
-import { CreateNewsletterDto } from './create-newsletter.dto';
+import { IsEmail, IsString } from 'class-validator';
 
-export class UpdateNewsletterDto extends CreateNewsletterDto {}
+export class UpdateNewsletterDto {
+  @IsString()
+  readonly name: string;
+
+  readonly file?: string;
+
+  @IsEmail({}, { each: true })
+  recipients: string[];
+}

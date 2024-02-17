@@ -44,11 +44,9 @@ export const Container = styled.div<{
           0 64px;
       background-color: ${background.primary};
       background-size: 64px 128px;
-    `}
-
-  &:hover {
+    `}/* &:hover {
     transform: scale(1.02); // 1.1 is the scale factor, adjust as needed
-  }
+  } */
 `;
 
 export const Title = styled.p`
@@ -57,10 +55,23 @@ export const Title = styled.p`
   color: #000;
 `;
 
-export const InfoContainer = styled.div`
+export const CommandOptions = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+`;
+
+export const InfoContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   width: 100%;
   position: absolute;
   bottom: 0;
@@ -78,4 +89,14 @@ export const RecipientsContainer = styled.div`
 export const Subtitle = styled.p`
   font-size: 1rem;
   color: #000;
+`;
+
+export const ButtonContainer = styled.button`
+  background-color: transparent;
+  text-decoration: none;
+  display: block;
+  text-align: center;
+  width: fit-content;
+  border: none;
+  cursor: pointer;
 `;

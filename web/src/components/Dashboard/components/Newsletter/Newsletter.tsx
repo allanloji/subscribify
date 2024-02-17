@@ -1,8 +1,11 @@
 import { Spacer } from "@/components/ui";
 import * as S from "./Newsletter.styles";
-import { Users, Send } from "lucide-react";
+import { Users, Send, Pencil } from "lucide-react";
 import { getBackground } from "./utils";
-import { useRouter } from "next/router";
+import Link from "next/link";
+import { useMutation } from "@tanstack/react-query";
+import { API_URL } from "@/utils/constants";
+import { toast } from "sonner";
 
 interface NewsletterProps {
   name: string;
@@ -11,12 +14,30 @@ interface NewsletterProps {
 }
 
 function Newsletter({ name, recipients, id }: NewsletterProps) {
-  const router = useRouter();
+  const { mutate } = useMutation({
+    mutationFn: async () => {
+      fetch(`${API_URL}/newsletters/${id}/send`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    },
+    onSuccess: () => {
+      toast.success("Newsletter was sent! 🚀");
+    },
+  });
   return (
-    <S.Container
-      background={getBackground(id)}
-      onClick={() => router.push(`newsletters/${id}/edit`)}
-    >
+    <S.Container background={getBackground(id)}>
+      <S.CommandOptions>
+        <Link href={`/newsletters/${id}/edit`}>
+          <Pencil />
+        </Link>
+        <Spacer horizontal size={0.5} />| <Spacer horizontal size={0.5} />
+        <S.ButtonContainer onClick={() => mutate()}>
+          <Send />
+        </S.ButtonContainer>
+      </S.CommandOptions>
       <S.Title>{name}</S.Title>
       <S.InfoContainer>
         <S.RecipientsContainer>
