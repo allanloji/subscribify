@@ -137,6 +137,7 @@ export class NewslettersService {
       const newsletter = await this.prisma.newsletter.delete({
         where: { id },
       });
+      this.deleteS3File(newsletter.file);
       return newsletter;
     } catch (e) {
       throw new NotFoundException(`Newsletter #${id} not found`);

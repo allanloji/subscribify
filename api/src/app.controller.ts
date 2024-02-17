@@ -5,8 +5,13 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  // @Get('statistics')
-  // getStatistics() {
-  //   return this.appService.getStatistics();
-  // }
+  @Get('statistics')
+  getStatistics() {
+    return this.appService.getStatistics();
+  }
+
+  @Get('unsubscribes')
+  getUnsubscribes() {
+    return this.appService.getUnsubscribesLogsLast30Days();
+  }
 }
