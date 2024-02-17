@@ -21,8 +21,10 @@ function Dashboard() {
   return (
     <main>
       <S.Title>subscribify</S.Title>
-      <S.Subtitle>Manage your newsletters in an easy way</S.Subtitle>
-      <S.CreateLink href="/newsletters">Create a new newsletter</S.CreateLink>
+      <S.Subtitle>Manage your newsletters in an easy way 🗞️</S.Subtitle>
+      <S.CreateLink href="/newsletters/create">
+        Create a new newsletter
+      </S.CreateLink>
       <S.NewslettersContainer>
         {data?.map((newsletter) => (
           <Newsletter
