@@ -13,11 +13,11 @@ import { Tailwind } from '@react-email/tailwind';
 import * as React from 'react';
 
 interface NewsletterEmailProps {
-  email: string;
+  link: string;
   newsletterName: string;
 }
 
-function NewsletterEmail({ email, newsletterName }: NewsletterEmailProps) {
+function NewsletterEmail({ link, newsletterName }: NewsletterEmailProps) {
   return (
     <Html>
       <Head />
@@ -41,8 +41,8 @@ function NewsletterEmail({ email, newsletterName }: NewsletterEmailProps) {
             </Text>
             <Section className="text-center mt-[32px] mb-[32px]">
               <Button
-                className="rounded-lg bg-[#656ee8] text-white text-[16px] font-bold text-center block w-3/4 p-[10px]"
-                href="https://dashboard.stripe.com/login"
+                className="rounded-lg bg-[#000] text-white text-[16px] font-bold text-center block w-3/4 p-[10px]"
+                href={link}
               >
                 Unsubscribe from this newsletter
               </Button>

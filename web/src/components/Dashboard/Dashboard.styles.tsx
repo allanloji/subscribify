@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import Link from "next/link";
+import Image from "next/image";
 
 export const Title = styled.h1`
   font-size: 4rem;
@@ -35,3 +36,33 @@ export const NewslettersContainer = styled.div`
   margin-top: 2rem;
   height: 100%;
 `;
+
+export const MessageContainer = styled.div`
+  display: flex;
+  align-items: center;
+  height: 200px;
+  width: 100%;
+  background-color: #c3f0c3;
+  border-radius: 1rem;
+  padding: 2rem;
+  justify-content: space-between;
+`;
+
+export const MessageContent = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  width: 40%;
+`;
+
+export const MessageTitle = styled.h2`
+  font-size: 2rem;
+  color: #000;
+  font-weight: normal;
+`;
+
+export const MessageSubtitle = styled.p`
+  color: #000;
+`;
+
+export const MessageImage = styled(Image)``;

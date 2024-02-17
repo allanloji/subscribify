@@ -27,6 +27,17 @@ function Newsletter({ name, recipients, id }: NewsletterProps) {
       toast.success("Newsletter was sent! 🚀");
     },
   });
+
+  const handleSendPress = () => {
+    if (recipients === 0) {
+      toast.error(
+        "You need to have at least one recipient to send the newsletter"
+      );
+      return;
+    }
+
+    mutate();
+  };
   return (
     <S.Container background={getBackground(id)}>
       <S.CommandOptions>
@@ -34,7 +45,7 @@ function Newsletter({ name, recipients, id }: NewsletterProps) {
           <Pencil />
         </Link>
         <Spacer horizontal size={0.5} />| <Spacer horizontal size={0.5} />
-        <S.ButtonContainer onClick={() => mutate()}>
+        <S.ButtonContainer onClick={handleSendPress}>
           <Send />
         </S.ButtonContainer>
       </S.CommandOptions>

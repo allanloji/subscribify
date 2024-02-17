@@ -41,8 +41,14 @@ export default class EmailService {
     name: string,
     email: string,
     file: { fileName: string; path: string },
+    id: string,
   ) {
-    const emailHtml = render(NewsletterEmail({ email, newsletterName: name }));
+    const emailHtml = render(
+      NewsletterEmail({
+        newsletterName: name,
+        link: `${this.configService.get('WEB_URL')}/unsubscribe?email=${email}&newsletter=${id}`,
+      }),
+    );
 
     return this.nodemailerTransport.sendMail({
       from: 'allanloji@gmail.com',
@@ -54,13 +60,13 @@ export default class EmailService {
   }
 
   async sendNewsletter(newsletter: any) {
-    const { file, name, recipients } = newsletter;
+    const { file, name, recipients, id } = newsletter;
     const fileObject = await this.getS3File(file);
 
     await Promise.all(
       recipients.map(
         async (recipient: any) =>
-          await this.sendEmail(name, recipient, fileObject),
+          await this.sendEmail(name, recipient, fileObject, id),
       ),
     );
   }
