@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { createTransport } from 'nodemailer';
 import * as Mail from 'nodemailer/lib/mailer';
 import { ConfigService } from '@nestjs/config';
@@ -7,6 +7,7 @@ import { render } from '@react-email/render';
 import NewsletterEmail from './templates/email';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { Newsletter, Recipient } from '@prisma/client';
 
 @Injectable()
 export default class EmailService {
@@ -39,27 +40,27 @@ export default class EmailService {
 
   async sendEmail(
     name: string,
-    email: string,
+    recipient: Recipient,
     file: { fileName: string; path: string },
     id: string,
   ) {
     const emailHtml = render(
       NewsletterEmail({
         newsletterName: name,
-        link: `${this.configService.get('WEB_URL')}/unsubscribe?email=${email}&newsletter=${id}`,
+        link: `${this.configService.get('WEB_URL')}/unsubscribe?recipient=${recipient.id}&newsletter=${id}`,
       }),
     );
 
     return this.nodemailerTransport.sendMail({
       from: 'allanloji@gmail.com',
-      to: email,
+      to: recipient.email,
       subject: 'New message from the newsletter!',
       html: emailHtml,
       attachments: [file],
     });
   }
 
-  async sendNewsletter(newsletter: any) {
+  async sendNewsletter(newsletter: Newsletter & { recipients: Recipient[] }) {
     const { file, name, recipients, id } = newsletter;
     const fileObject = await this.getS3File(file);
 

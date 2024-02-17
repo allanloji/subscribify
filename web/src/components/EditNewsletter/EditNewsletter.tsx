@@ -52,7 +52,9 @@ function EditNewsletter({ newsletter }: any) {
     useForm<NewsletterForm>({
       defaultValues: {
         name: newsletter.name,
-        recipients: [...newsletter?.recipients?.map((r) => ({ value: r }))],
+        recipients: [
+          ...newsletter?.recipients?.map((r) => ({ value: r.email })),
+        ],
       },
       mode: "onSubmit",
     });

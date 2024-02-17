@@ -11,8 +11,34 @@ datasource db {
 }
 
 model Newsletter {
-  id         String   @id @default(uuid())
-  file       String
-  name       String
-  recipients String[]
+  id              String           @id @default(uuid())
+  file            String
+  name            String
+  recipients      Recipient[]
+  emailLogs       EmailLog[]
+  unsubscribeLogs UnsubscribeLog[]
+}
+
+model Recipient {
+  id              String           @id @default(uuid())
+  email           String           @unique
+  newsletters     Newsletter[]
+  unsubscribeLogs UnsubscribeLog[]
+}
+
+model EmailLog {
+  id           String     @id @default(uuid())
+  sentAt       DateTime   @default(now())
+  emailsSent   Int
+  newsletterId String
+  newsletter   Newsletter @relation(fields: [newsletterId], references: [id])
+}
+
+model UnsubscribeLog {
+  id           String     @id @default(uuid())
+  newsletterId String
+  recipientId  String
+  createdAt    DateTime   @default(now())
+  newsletter   Newsletter @relation(fields: [newsletterId], references: [id])
+  recipient    Recipient  @relation(fields: [recipientId], references: [id])
 }

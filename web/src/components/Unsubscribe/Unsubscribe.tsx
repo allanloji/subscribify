@@ -8,7 +8,7 @@ import { toast } from "sonner";
 function Unsubscribe() {
   const router = useRouter();
 
-  const { email, newsletter: id } = router.query;
+  const { recipient, newsletter: id } = router.query;
 
   const { data: newsletter, isLoading } = useQuery({
     queryKey: ["newsletter", id],
@@ -29,7 +29,7 @@ function Unsubscribe() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ id: recipient }),
       });
 
       return response.json();
