@@ -7,10 +7,9 @@ import { PrismaService } from './prisma.service';
 import { NewslettersService } from './newsletters/newsletters.service';
 import { NewslettersController } from './newsletters/newsletters.controller';
 import EmailService from './email/email.service';
-import { EmailModule } from './email/email.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), EmailModule],
+  imports: [ConfigModule.forRoot()],
   controllers: [AppController, NewslettersController],
   providers: [AppService, PrismaService, NewslettersService, EmailService],
 })

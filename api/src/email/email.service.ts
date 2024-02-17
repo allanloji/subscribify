@@ -1,44 +1,79 @@
-import { Injectable } from '@nestjs/common';
+import { ConsoleLogger, Injectable, Logger } from '@nestjs/common';
 import { createTransport } from 'nodemailer';
 import * as Mail from 'nodemailer/lib/mailer';
 import { ConfigService } from '@nestjs/config';
 import * as aws from '@aws-sdk/client-ses';
 import { render } from '@react-email/render';
 import NewsletterEmail from './templates/email';
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 @Injectable()
 export default class EmailService {
   private nodemailerTransport: Mail;
+  private s3Client: S3Client;
+  private readonly logger = new Logger('Email');
 
   constructor(private readonly configService: ConfigService) {
     const ses = new aws.SESClient({
-      region: 'us-east-1',
-      //@ts-expect-error - This is a valid property
-      accessKeyId: configService.get('AWS_ACCESS_KEY_ID'),
-      secretAccessKey: configService.get('AWS_SECRET_ACCESS_KEY'),
+      region: configService.get('AWS_REGION'),
+      credentials: {
+        accessKeyId: configService.get('AWS_ACCESS_KEY_ID'),
+        secretAccessKey: configService.get('AWS_SECRET_ACCESS_KEY'),
+      },
     });
+
+    const s3 = new S3Client({
+      region: configService.get('AWS_REGION'),
+      credentials: {
+        accessKeyId: configService.get('AWS_ACCESS_KEY_ID'),
+        secretAccessKey: configService.get('AWS_SECRET_ACCESS_KEY'),
+      },
+    });
+
+    this.s3Client = s3;
 
     this.nodemailerTransport = createTransport({
       SES: { ses, aws },
     });
   }
 
-  sendMail() {
-    const emailHtml = render(
-      NewsletterEmail({ email: 'allanloji@gmail.com', newsletterName: 'Test' }),
-    );
+  async sendEmail(
+    name: string,
+    email: string,
+    file: { fileName: string; path: string },
+  ) {
+    const emailHtml = render(NewsletterEmail({ email, newsletterName: name }));
 
     return this.nodemailerTransport.sendMail({
-      to: 'allanloji@gmail.com',
-      subject: 'Test',
+      from: 'allanloji@gmail.com',
+      to: email,
+      subject: 'New message from the newsletter!',
       html: emailHtml,
-      //   attachments: [
-      //     {
-      //       // utf-8 string as an attachment
-      //       filename: 'text1.txt',
-      //       content: 'hello world!',
-      //     },
-      //   ],
+      attachments: [file],
     });
+  }
+
+  async sendNewsletter(newsletter: any) {
+    const { file, name, recipients } = newsletter;
+    const fileObject = await this.getS3File(file);
+
+    await Promise.all(
+      recipients.map(
+        async (recipient: any) =>
+          await this.sendEmail(name, recipient, fileObject),
+      ),
+    );
+  }
+
+  async getS3File(file: string) {
+    const command = new GetObjectCommand({
+      Bucket: this.configService.get('AWS_BUCKET'),
+      Key: file,
+    });
+
+    const url = await getSignedUrl(this.s3Client, command, { expiresIn: 3600 });
+
+    return { fileName: file, path: url };
   }
 }

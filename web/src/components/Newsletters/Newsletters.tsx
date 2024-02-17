@@ -4,6 +4,9 @@ import { Plus, Trash2 } from "lucide-react";
 import TextInput from "../ui/TextInput";
 import * as S from "./Newsletters.styles";
 import { uploadFile } from "@/utils/uploadFile";
+import { useMutation } from "@tanstack/react-query";
+import { API_URL } from "@/utils/constants";
+import { useRouter } from "next/router";
 
 type Recipient = {
   value: string;
@@ -15,7 +18,37 @@ type NewsletterForm = {
   recipients: Recipient[];
 };
 
+type Newsletter = {
+  id: string;
+  name: string;
+  file: string;
+  recipients: string[];
+};
+
+type CreateNewsletterBody = {
+  name: string;
+  file: string;
+  recipients: string[];
+};
+
 function Newsletters() {
+  const router = useRouter();
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (data) => {
+      console.log(JSON.stringify(data));
+      const response = await fetch(`${API_URL}/newsletters`, {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+
+      return response.json();
+    },
+    onSuccess: (data) => {
+      console.log(data);
+      //   router.push("/");
+    },
+  });
+
   const { register, handleSubmit, control, formState } =
     useForm<NewsletterForm>({
       defaultValues: { recipients: [{ value: "" }] },
@@ -34,11 +67,18 @@ function Newsletters() {
   });
 
   const onSubmit = async ({ file, name, recipients }: NewsletterForm) => {
-    const fileKey = await uploadFile(file[0]);
+    const fileKey = (await uploadFile(file[0])) || "";
+    const data: CreateNewsletterBody = {
+      name,
+      file: fileKey,
+      recipients: recipients.map((r) => r.value),
+    };
+
+    mutate(data);
   };
 
   return (
-    <div>
+    <>
       <h1>Create your newsletter</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Spacer />
@@ -93,9 +133,11 @@ function Newsletters() {
           ))}
         </div>
         <Spacer size={2} />
-        <Button type="submit">Create</Button>
+        <Button type="submit" disabled={isPending}>
+          {isPending ? "Creating..." : "Create"}
+        </Button>
       </form>
-    </div>
+    </>
   );
 }
 

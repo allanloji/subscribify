@@ -3,10 +3,14 @@ import { PrismaService } from 'src/prisma.service';
 import { CreateNewsletterDto } from './dto/create-newsletter.dto';
 import { UpdateNewsletterDto } from './dto/update-newsletter.dto';
 import { UnsubscribeNewsletterDto } from './dto/unsubscribe-newsletter.dto';
+import EmailService from 'src/email/email.service';
 
 @Injectable()
 export class NewslettersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private emailService: EmailService,
+  ) {}
 
   async findAll() {
     return this.prisma.newsletter.findMany();
@@ -68,5 +72,11 @@ export class NewslettersService {
         },
       },
     });
+  }
+
+  async send(id: string) {
+    const newsletter = await this.findOne(id);
+
+    return this.emailService.sendNewsletter(newsletter);
   }
 }
