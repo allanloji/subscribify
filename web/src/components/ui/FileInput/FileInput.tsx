@@ -21,7 +21,7 @@ function FileInput(
       <Spacer size={0.5} />
       <S.Input
         type="file"
-        accept="image/png, document/pdf"
+        accept="image/png,application/pdf"
         name={name}
         id={name}
         placeholder={placeholder}

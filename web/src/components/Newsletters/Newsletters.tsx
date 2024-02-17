@@ -35,17 +35,18 @@ function Newsletters() {
   const router = useRouter();
   const { mutate, isPending } = useMutation({
     mutationFn: async (data) => {
-      console.log(JSON.stringify(data));
       const response = await fetch(`${API_URL}/newsletters`, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(data),
       });
 
       return response.json();
     },
     onSuccess: (data) => {
-      console.log(data);
-      //   router.push("/");
+      router.push("/");
     },
   });
 

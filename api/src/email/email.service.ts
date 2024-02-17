@@ -1,4 +1,4 @@
-import { ConsoleLogger, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { createTransport } from 'nodemailer';
 import * as Mail from 'nodemailer/lib/mailer';
 import { ConfigService } from '@nestjs/config';
@@ -12,7 +12,6 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 export default class EmailService {
   private nodemailerTransport: Mail;
   private s3Client: S3Client;
-  private readonly logger = new Logger('Email');
 
   constructor(private readonly configService: ConfigService) {
     const ses = new aws.SESClient({
