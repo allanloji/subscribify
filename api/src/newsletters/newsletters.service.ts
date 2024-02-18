@@ -145,6 +145,16 @@ export class NewslettersService {
   }
 
   async unsubscribe(id: string, { id: recipientId }: UnsubscribeNewsletterDto) {
+    const newsletter = await this.prisma.recipient.findUnique({
+      where: { id: recipientId, newsletters: { some: { id } } },
+    });
+
+    if (!newsletter) {
+      throw new NotFoundException(
+        `Recipient #${recipientId} is not subscribed to newsletter #${id}`,
+      );
+    }
+
     await this.prisma.unsubscribeLog.create({
       data: {
         newsletter: { connect: { id } },

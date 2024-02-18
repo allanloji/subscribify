@@ -6,6 +6,14 @@ import { Spacer } from "../ui";
 import StatCard from "./components/StatCard";
 import { MailCheck, UserX, Users } from "lucide-react";
 import Image from "next/image";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts";
 
 function Dashboard() {
   const { data: newsletters } = useQuery({
@@ -31,6 +39,26 @@ function Dashboard() {
       return response.json();
     },
   });
+
+  const { data: unsubscribresData } = useQuery({
+    queryKey: ["unsubscribes"],
+    queryFn: async () => {
+      const response = await fetch(`${API_URL}/unsubscribes`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      return response.json();
+    },
+    select: (data) => {
+      return data.map((d: any) => ({
+        name: d.date,
+        count: d.count,
+      }));
+    },
+  });
+
+  console.log(unsubscribresData);
 
   return (
     <main>
@@ -81,6 +109,36 @@ function Dashboard() {
             />
           </S.StatsContainer>
         </>
+      )}
+      <Spacer size={2} />
+      {unsubscribresData && (
+        <S.ChartContainer>
+          <h2>Last month unsubscribes</h2>
+          <Spacer />
+          <ResponsiveContainer width="100%" height="90%">
+            <AreaChart
+              data={unsubscribresData}
+              margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+            >
+              <defs>
+                <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <XAxis dataKey="name" padding={{ right: 20 }} />
+              <YAxis allowDecimals={false} />
+              <Tooltip />
+              <Area
+                type="monotone"
+                dataKey="count"
+                stroke="#8884d8"
+                fillOpacity={1}
+                fill="url(#colorCount)"
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </S.ChartContainer>
       )}
       <Spacer size={2} />
       <h2>NewsLetters</h2>

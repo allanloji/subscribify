@@ -31,28 +31,19 @@ export class AppService {
   }
 
   async getUnsubscribesLogsLast30Days() {
-    const now = new Date();
-    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const unsubscribeLogs: any = await this.prisma.$queryRaw`
+    SELECT DATE("createdAt") as date, COUNT(*) as count
+    FROM "UnsubscribeLog"
+    WHERE "createdAt" >= CURRENT_DATE - INTERVAL '30 days'
+    GROUP BY DATE("createdAt")
+    ORDER BY DATE("createdAt") ASC;
+    `;
 
-    const unsubscribeLogs = await this.prisma.unsubscribeLog.groupBy({
-      by: ['createdAt'],
-      where: {
-        createdAt: {
-          gte: thirtyDaysAgo,
-          lte: now,
-        },
-      },
-      _count: {
-        createdAt: true,
-      },
-      orderBy: {
-        createdAt: 'asc',
-      },
-    });
-
-    return unsubscribeLogs.map((log) => ({
-      date: log.createdAt,
-      count: log._count.createdAt,
+    const unsubscribeLogsAsNumbers = unsubscribeLogs.map((log) => ({
+      date: log.date.toISOString().split('T')[0],
+      count: Number(log.count),
     }));
+
+    return unsubscribeLogsAsNumbers;
   }
 }
