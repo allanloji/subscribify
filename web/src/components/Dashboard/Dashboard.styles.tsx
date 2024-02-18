@@ -18,7 +18,6 @@ export const CreateLink = styled(Link)`
   border-radius: 2rem;
   font-size: 1rem;
   text-decoration: none;
-  margin-top: 2rem;
   display: block;
   transition: color 0.2s;
   text-align: center;
@@ -33,7 +32,7 @@ export const NewslettersContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: 2rem;
-  margin-top: 2rem;
+
   height: 100%;
 `;
 
@@ -65,4 +64,7 @@ export const MessageSubtitle = styled.p`
   color: #000;
 `;
 
-export const MessageImage = styled(Image)``;
+export const StatsContainer = styled.div`
+  display: flex;
+  gap: 2rem;
+`;
