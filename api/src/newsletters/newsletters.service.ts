@@ -6,15 +6,17 @@ import { UnsubscribeNewsletterDto } from './dto/unsubscribe-newsletter.dto';
 import EmailService from 'src/email/email.service';
 import { DeleteObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { ConfigService } from '@nestjs/config';
+import { EmailSchedulingService } from 'src/email-scheduling/email-scheduling.service';
 
 @Injectable()
 export class NewslettersService {
   private s3Client: S3Client;
 
   constructor(
-    private prisma: PrismaService,
-    private emailService: EmailService,
+    private readonly prisma: PrismaService,
+    private readonly emailService: EmailService,
     private readonly configService: ConfigService,
+    private readonly emailSchedulingService: EmailSchedulingService,
   ) {
     const s3 = new S3Client({
       region: configService.get('AWS_REGION'),
@@ -63,7 +65,7 @@ export class NewslettersService {
     return newsletter;
   }
 
-  async create({ name, file, recipients }: CreateNewsletterDto) {
+  async create({ name, file, recipients, scheduledAt }: CreateNewsletterDto) {
     // Create recipients if they don't exist
     await Promise.all(
       recipients.map(async (email: string) => {
@@ -75,10 +77,11 @@ export class NewslettersService {
       }),
     );
 
-    return this.prisma.newsletter.create({
+    const newsletter = await this.prisma.newsletter.create({
       data: {
         name,
         file,
+        scheduledAt,
         recipients: {
           connect: recipients.map((email: string) => ({ email })),
         },
@@ -87,9 +90,18 @@ export class NewslettersService {
         recipients: true,
       },
     });
+
+    if (scheduledAt) {
+      this.emailSchedulingService.scheduleEmail(newsletter);
+    }
+
+    return newsletter;
   }
 
-  async update(id: string, { name, file, recipients }: UpdateNewsletterDto) {
+  async update(
+    id: string,
+    { name, file, recipients, scheduledAt }: UpdateNewsletterDto,
+  ) {
     // Create recipients if they don't exist
     await Promise.all(
       recipients.map(async (email: string) => {
@@ -100,33 +112,46 @@ export class NewslettersService {
         });
       }),
     );
+    const newsletter = await this.prisma.newsletter.findUnique({
+      where: { id },
+      select: {
+        file: true,
+        scheduledAt: true,
+      },
+    });
 
     // Delete the old file if a new one is provided
     if (file) {
-      const newsletter = await this.prisma.newsletter.findUnique({
-        where: { id },
-        select: {
-          file: true,
-        },
-      });
-
       if (newsletter.file) {
         this.deleteS3File(newsletter.file);
       }
     }
 
+    // Cancel the scheduled email if the scheduledAt field is removed
+    if (!scheduledAt && newsletter.scheduledAt) {
+      await this.emailSchedulingService.cancelScheduledEmail(id);
+    }
+
     try {
-      const newsletter = await this.prisma.newsletter.update({
+      const updatedNewsletter = await this.prisma.newsletter.update({
         where: { id },
+        include: {
+          recipients: true,
+        },
         data: {
           name,
           recipients: {
             set: recipients.map((email: string) => ({ email })),
           },
           ...(file && { file }),
+          ...(scheduledAt && { scheduledAt }),
         },
       });
-      return newsletter;
+
+      if (scheduledAt) {
+        this.emailSchedulingService.scheduleEmail(updatedNewsletter);
+      }
+      return updatedNewsletter;
     } catch (e) {
       throw new NotFoundException(`Newsletter #${id} not found`);
     }
@@ -138,6 +163,9 @@ export class NewslettersService {
         where: { id },
       });
       this.deleteS3File(newsletter.file);
+      if (newsletter.scheduledAt) {
+        this.emailSchedulingService.cancelScheduledEmail(id);
+      }
       return newsletter;
     } catch (e) {
       throw new NotFoundException(`Newsletter #${id} not found`);
@@ -179,6 +207,7 @@ export class NewslettersService {
         id: true,
         name: true,
         file: true,
+        scheduledAt: true,
         recipients: {
           select: {
             email: true,
@@ -192,13 +221,9 @@ export class NewslettersService {
       throw new NotFoundException(`Newsletter #${id} not found`);
     }
 
-    // Create a log entry for the email
-    await this.prisma.emailLog.create({
-      data: {
-        newsletter: { connect: { id } },
-        emailsSent: newsletter.recipients.length,
-      },
-    });
+    if (newsletter.scheduledAt) {
+      return this.emailSchedulingService.scheduleEmail(newsletter);
+    }
 
     return this.emailService.sendNewsletter(newsletter);
   }

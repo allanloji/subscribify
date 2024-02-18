@@ -1,5 +1,6 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
+import Link from "next/link";
 
 export const RecipientContainer = styled.div`
   display: flex;
@@ -71,4 +72,25 @@ export const BackgroundContainer = styled.div<{
 export const FileContainer = styled.div`
   display: flex;
   align-items: center;
+`;
+
+export const BackButton = styled(Link)`
+  position: absolute;
+  background-color: #000;
+  color: #fff;
+  border-radius: 2rem;
+  border: none;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #666;
+  }
 `;

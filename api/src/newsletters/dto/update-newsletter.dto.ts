@@ -8,4 +8,6 @@ export class UpdateNewsletterDto {
 
   @IsEmail({}, { each: true })
   recipients: string[];
+
+  readonly scheduledAt?: string;
 }

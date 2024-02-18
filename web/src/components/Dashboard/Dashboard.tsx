@@ -58,8 +58,6 @@ function Dashboard() {
     },
   });
 
-  console.log(unsubscribresData);
-
   return (
     <main>
       <S.Title>subscribify</S.Title>
@@ -82,6 +80,7 @@ function Dashboard() {
           alt="Newsletter"
           width={200}
           height={200}
+          priority
         />
       </S.MessageContainer>
       <Spacer size={2} />
@@ -113,7 +112,7 @@ function Dashboard() {
       <Spacer size={2} />
       {unsubscribresData && (
         <S.ChartContainer>
-          <h2>Last month unsubscribes</h2>
+          <h2>Last 30 days unsubscribes</h2>
           <Spacer />
           <ResponsiveContainer width="100%" height="90%">
             <AreaChart

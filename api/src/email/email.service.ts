@@ -8,13 +8,17 @@ import NewsletterEmail from './templates/email';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Newsletter, Recipient } from '@prisma/client';
+import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export default class EmailService {
   private nodemailerTransport: Mail;
   private s3Client: S3Client;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly prisma: PrismaService,
+  ) {
     const ses = new aws.SESClient({
       region: configService.get('AWS_REGION'),
       credentials: {
@@ -63,6 +67,14 @@ export default class EmailService {
   async sendNewsletter(newsletter: Newsletter & { recipients: Recipient[] }) {
     const { file, name, recipients, id } = newsletter;
     const fileObject = await this.getS3File(file);
+
+    // Create a log entry for the email
+    await this.prisma.emailLog.create({
+      data: {
+        newsletter: { connect: { id } },
+        emailsSent: newsletter.recipients.length,
+      },
+    });
 
     await Promise.all(
       recipients.map(

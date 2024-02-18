@@ -55,7 +55,6 @@ export const getBackground = (id: string) => {
   const uuidNumber = parseInt(sanitizedUuid.substring(0, 8), 16);
 
   const index = (uuidNumber * 10) % backgrounds.length;
-  console.log(id, uuidNumber, index);
 
   return backgrounds[index];
 };
