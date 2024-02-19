@@ -26,7 +26,7 @@ function Dashboard() {
 
         <Image
           src="https://illustrations.popsy.co/green/idea-launch.svg"
-          alt="Newsletter"
+          alt="A man working on a computer with a rocket on top of it."
           width={200}
           height={200}
           priority
