@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateNewsletterDto } from './dto/create-newsletter.dto';
 import { UpdateNewsletterDto } from './dto/update-newsletter.dto';
@@ -11,6 +11,7 @@ import { EmailSchedulingService } from 'src/email-scheduling/email-scheduling.se
 @Injectable()
 export class NewslettersService {
   private s3Client: S3Client;
+  private readonly logger = new Logger(EmailSchedulingService.name);
 
   constructor(
     private readonly prisma: PrismaService,
@@ -34,6 +35,7 @@ export class NewslettersService {
         id: true,
         name: true,
         file: true,
+        scheduledAt: true,
         recipients: {
           select: {
             email: true,
@@ -50,6 +52,7 @@ export class NewslettersService {
         id: true,
         name: true,
         file: true,
+        scheduledAt: true,
         recipients: {
           select: {
             email: true,
@@ -126,7 +129,6 @@ export class NewslettersService {
         this.deleteS3File(newsletter.file);
       }
     }
-
     // Cancel the scheduled email if the scheduledAt field is removed
     if (!scheduledAt && newsletter.scheduledAt) {
       await this.emailSchedulingService.cancelScheduledEmail(id);
@@ -144,7 +146,7 @@ export class NewslettersService {
             set: recipients.map((email: string) => ({ email })),
           },
           ...(file && { file }),
-          ...(scheduledAt && { scheduledAt }),
+          scheduledAt: scheduledAt || null,
         },
       });
 

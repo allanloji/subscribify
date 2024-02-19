@@ -1,4 +1,4 @@
-import { IsEmail, IsString } from 'class-validator';
+import { IsEmail, IsOptional, IsString } from 'class-validator';
 
 export class UpdateNewsletterDto {
   @IsString()
@@ -9,5 +9,6 @@ export class UpdateNewsletterDto {
   @IsEmail({}, { each: true })
   recipients: string[];
 
+  @IsOptional()
   readonly scheduledAt?: string;
 }

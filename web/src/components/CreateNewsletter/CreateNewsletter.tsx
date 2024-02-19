@@ -77,15 +77,16 @@ function CreateNewsletter() {
     recipients,
     scheduledAt,
   }: NewsletterForm) => {
-    console.log(new Date(scheduledAt).toISOString());
     const fileKey = (await uploadFile(file[0])) || "";
     const data: CreateNewsletterBody = {
       name,
       file: fileKey,
       recipients: recipients.map((r) => r.value),
-      ...(scheduledAt && { scheduledAt: new Date(scheduledAt).toISOString() }),
+      ...(scheduledAt &&
+        scheduledAt !== "" && {
+          scheduledAt: new Date(scheduledAt).toISOString(),
+        }),
     };
-    console.log(data);
 
     mutate(data);
   };

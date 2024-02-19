@@ -153,6 +153,7 @@ function Dashboard() {
             name={newsletter.name}
             recipients={newsletter.recipients.length}
             id={newsletter.id}
+            scheduledAt={newsletter.scheduledAt}
           />
         ))}
       </S.NewslettersContainer>

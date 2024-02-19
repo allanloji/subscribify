@@ -1,4 +1,11 @@
-import { Button, FileInput, IconButton, Spacer, TextInput } from "../ui";
+import {
+  Button,
+  DatetimeInput,
+  FileInput,
+  IconButton,
+  Spacer,
+  TextInput,
+} from "../ui";
 import { useFieldArray, useForm } from "react-hook-form";
 import { FileCheck, Plus, Trash2, ChevronLeft } from "lucide-react";
 import * as S from "./EditNewsletter.styles";
@@ -7,6 +14,7 @@ import { getFile, uploadFile } from "@/utils/s3";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { API_URL } from "@/utils/constants";
 import { useRouter } from "next/router";
+import { add, format } from "date-fns";
 
 type Recipient = {
   value: string;
@@ -16,6 +24,7 @@ type NewsletterForm = {
   name: string;
   file: FileList;
   recipients: Recipient[];
+  scheduledAt: string;
 };
 
 type Newsletter = {
@@ -26,6 +35,7 @@ type Newsletter = {
 };
 
 function EditNewsletter({ newsletter }: any) {
+  console.log(newsletter);
   const queryClient = useQueryClient();
   const router = useRouter();
   const { mutate, isPending } = useMutation({
@@ -55,6 +65,12 @@ function EditNewsletter({ newsletter }: any) {
         recipients: [
           ...newsletter?.recipients?.map((r) => ({ value: r.email })),
         ],
+        ...(newsletter.scheduledAt && {
+          scheduledAt: format(
+            new Date(newsletter.scheduledAt),
+            "yyyy-MM-dd'T'HH:mm"
+          ),
+        }),
       },
       mode: "onSubmit",
     });
@@ -79,10 +95,19 @@ function EditNewsletter({ newsletter }: any) {
     },
   });
 
-  const onSubmit = async ({ file, name, recipients }: NewsletterForm) => {
+  const onSubmit = async ({
+    file,
+    name,
+    recipients,
+    scheduledAt,
+  }: NewsletterForm) => {
     let data: any = {
       name,
       recipients: recipients.map((r) => r.value),
+      ...(scheduledAt &&
+        scheduledAt !== "" && {
+          scheduledAt: new Date(scheduledAt).toISOString(),
+        }),
     };
 
     if (file.length > 0) {
@@ -169,6 +194,16 @@ function EditNewsletter({ newsletter }: any) {
                 </div>
               ))}
             </div>
+            <Spacer size={2} />
+            <DatetimeInput
+              label="Date and time to send"
+              aria-label="Date and time"
+              {...register("scheduledAt")}
+              min={format(
+                add(new Date(), { minutes: 5 }),
+                "yyyy-MM-dd'T'HH:mm"
+              )}
+            />
             <Spacer size={2} />
             <S.Container>
               <Button type="submit" disabled={isPending}>

@@ -30,7 +30,14 @@ export class EmailSchedulingService {
   }
 
   cancelScheduledEmail(newsletterId: string) {
-    const job = this.schedulerRegistry.getCronJob(`Newsletter-${newsletterId}`);
-    job.stop();
+    this.logger.log(JSON.stringify(this.schedulerRegistry.getCronJobs()));
+    try {
+      const job = this.schedulerRegistry.getCronJob(
+        `Newsletter-${newsletterId}`,
+      );
+      job.stop();
+    } catch (e) {
+      this.logger.log(e);
+    }
   }
 }
