@@ -13,3 +13,11 @@ export const Container = styled.div`
     padding: 0 1rem 3rem 1rem;
   }
 `;
+
+export const ErrorContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+`;

@@ -9,38 +9,39 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 import * as S from "./UnsubscribesChart.styles";
+import UnsubscribesChartPlaceholder from "./UnsubscribesChart.placeholder";
+import UnsubscribesChartError from "./UnsubscribesChart.error";
 
 function UnsubscribesChart() {
-  const { data: unsubscribesData, isLoading: isLoadingUnsubscribesData } =
-    useQuery({
-      queryKey: ["unsubscribes"],
-      queryFn: async () => {
-        const response = await fetch(`${API_URL}/unsubscribes`, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        return response.json();
-      },
-      select: (data) => {
-        return data.map((d: any) => ({
-          name: d.date,
-          count: d.count,
-        }));
-      },
-    });
+  const {
+    data: unsubscribesData,
+    isLoading: isLoadingUnsubscribesData,
+    isError: isErrorUnsubscribesData,
+  } = useQuery({
+    queryKey: ["unsubscribes"],
+    queryFn: async () => {
+      const response = await fetch(`${API_URL}/unsubscribes`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      return response.json();
+    },
+    select: (data) => {
+      return data.map((d: any) => ({
+        name: d.date,
+        count: d.count,
+      }));
+    },
+  });
 
   if (isLoadingUnsubscribesData) {
-    return (
-      <S.Container>
-        <Skeleton height={24} width={300} />
-        <Spacer />
-        <Skeleton height={300} />
-      </S.Container>
-    );
+    return <UnsubscribesChartPlaceholder />;
+  }
+
+  if (isErrorUnsubscribesData) {
+    return <UnsubscribesChartError />;
   }
 
   return (

@@ -4,11 +4,15 @@ import { useQuery } from "@tanstack/react-query";
 import StatCard from "../StatCard";
 import { MailCheck, UserX, Users } from "lucide-react";
 import * as S from "./GeneralStats.styles";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
+import GeneralStatsPlaceholder from "./GeneralStats.placeholder";
+import GeneralStatsError from "./GeneralStats.error";
 
 function GeneralStats() {
-  const { data: stats, isLoading: isLoadingStats } = useQuery({
+  const {
+    data: stats,
+    isLoading: isLoadingStats,
+    isError: isErrorStats,
+  } = useQuery({
     queryKey: ["stats"],
     queryFn: async () => {
       const response = await fetch(`${API_URL}/statistics`, {
@@ -16,22 +20,19 @@ function GeneralStats() {
           "Content-Type": "application/json",
         },
       });
+      if (!response.ok) {
+        throw new Error("Failed to fetch stats");
+      }
       return response.json();
     },
   });
 
   if (isLoadingStats) {
-    return (
-      <>
-        <Skeleton height={24} width={300} />
-        <Spacer />
-        <S.Container>
-          <StatCard.Placeholder />
-          <StatCard.Placeholder />
-          <StatCard.Placeholder />
-        </S.Container>
-      </>
-    );
+    return <GeneralStatsPlaceholder />;
+  }
+
+  if (isErrorStats) {
+    return <GeneralStatsError />;
   }
 
   return (

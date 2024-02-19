@@ -27,3 +27,10 @@ export const CreateLink = styled(Link)`
     background-color: #666;
   }
 `;
+
+export const EmptyContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
