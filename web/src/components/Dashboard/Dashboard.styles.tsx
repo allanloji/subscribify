@@ -28,14 +28,6 @@ export const CreateLink = styled(Link)`
   }
 `;
 
-export const NewslettersContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 2rem;
-
-  height: 100%;
-`;
-
 export const MessageContainer = styled.div`
   display: flex;
   align-items: center;
@@ -45,6 +37,11 @@ export const MessageContainer = styled.div`
   border-radius: 1rem;
   padding: 2rem;
   justify-content: space-between;
+
+  @media (max-width: 640px) {
+    height: fit-content;
+    flex-direction: column;
+  }
 `;
 
 export const MessageContent = styled.div`
@@ -52,6 +49,10 @@ export const MessageContent = styled.div`
   flex-direction: column;
 
   width: 40%;
+
+  @media (max-width: 640px) {
+    width: 100%;
+  }
 `;
 
 export const MessageTitle = styled.h2`
@@ -66,6 +67,7 @@ export const MessageSubtitle = styled.p`
 
 export const StatsContainer = styled.div`
   display: flex;
+  flex-wrap: wrap;
   gap: 2rem;
 `;
 
@@ -77,4 +79,18 @@ export const ChartContainer = styled.div`
   box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px,
     rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
   border-radius: 1rem;
+
+  @media (max-width: 640px) {
+    padding: 0 1rem 3rem 1rem;
+  }
+`;
+
+export const NewslettersContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
 `;

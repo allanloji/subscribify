@@ -96,6 +96,7 @@ function CreateNewsletter() {
       <S.BackButton href="/">
         <ChevronLeft />
       </S.BackButton>
+      <Spacer size={2} />
       <S.Container>
         <S.FormContainer>
           <h1>Create your newsletter</h1>

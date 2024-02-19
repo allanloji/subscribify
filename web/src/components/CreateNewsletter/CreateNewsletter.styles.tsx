@@ -4,6 +4,8 @@ import Link from "next/link";
 export const RecipientContainer = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  width: 100%;
 `;
 
 export const Container = styled.div`
@@ -16,7 +18,8 @@ export const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 500px;
+  width: 100%;
+  max-width: 500px;
   border-radius: 1rem;
   padding: 1.5rem;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px,
@@ -41,5 +44,9 @@ export const BackButton = styled(Link)`
 
   &:hover {
     background-color: #666;
+  }
+
+  @media (max-width: 640px) {
+    position: relative;
   }
 `;

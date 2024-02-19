@@ -87,6 +87,7 @@ function Dashboard() {
       {stats && (
         <>
           <h2>Overall Stats</h2>
+          <Spacer />
           <S.StatsContainer>
             <StatCard
               title="Total recipients"

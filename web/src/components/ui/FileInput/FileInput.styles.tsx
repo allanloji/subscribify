@@ -7,7 +7,7 @@ export const Input = styled.input`
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 0.25rem;
-  width: 20rem;
+  width: 100%;
   height: 2.5rem;
 
   ::file-selector-button {

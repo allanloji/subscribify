@@ -93,4 +93,8 @@ export const BackButton = styled(Link)`
   &:hover {
     background-color: #666;
   }
+
+  @media (max-width: 640px) {
+    position: relative;
+  }
 `;

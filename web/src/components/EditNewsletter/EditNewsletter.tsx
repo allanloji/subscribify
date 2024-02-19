@@ -123,6 +123,7 @@ function EditNewsletter({ newsletter }: any) {
       <S.BackButton href="/">
         <ChevronLeft />
       </S.BackButton>
+      <Spacer size={2} />
       <S.Container>
         <S.FormContainer>
           <S.BackgroundContainer background={getBackground(newsletter.id)} />

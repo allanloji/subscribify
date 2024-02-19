@@ -9,7 +9,7 @@ export const Container = styled.div<{
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 400px;
+
   height: 250px;
   border-radius: 1rem;
   padding: 0.5rem;
@@ -44,9 +44,7 @@ export const Container = styled.div<{
           0 64px;
       background-color: ${background.primary};
       background-size: 64px 128px;
-    `}/* &:hover {
-    transform: scale(1.02); // 1.1 is the scale factor, adjust as needed
-  } */
+    `}
 `;
 
 export const Title = styled.p`
