@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from './prisma.service';
+import { PrismaService } from './prisma/prisma.service';
 
 @Injectable()
 export class AppService {
@@ -31,7 +31,8 @@ export class AppService {
   }
 
   async getUnsubscribesLogsLast30Days() {
-    const unsubscribeLogs: any = await this.prisma.$queryRaw`
+    const unsubscribeLogs: { date: Date; count: number }[] = await this.prisma
+      .$queryRaw`
     SELECT DATE("createdAt") as date, COUNT(*) as count
     FROM "UnsubscribeLog"
     WHERE "createdAt" >= CURRENT_DATE - INTERVAL '30 days'

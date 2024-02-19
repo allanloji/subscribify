@@ -1,14 +1,16 @@
 import { Module } from '@nestjs/common';
 
-import { ConfigModule } from '@nestjs/config';
-import EmailService from 'src/email/email.service';
 import { NewslettersService } from './newsletters.service';
-import { EmailSchedulingService } from 'src/email-scheduling/email-scheduling.service';
+import { EmailModule } from 'src/email/email.module';
+import { EmailSchedulingModule } from 'src/email-scheduling/email-scheduling.module';
+import { PrismaModule } from 'src/prisma/prisma.module';
+import { S3Module } from 'src/s3/s3.module';
+import { NewslettersController } from './newsletters.controller';
 
 @Module({
-  imports: [ConfigModule, EmailService, EmailSchedulingService],
-  controllers: [],
+  imports: [PrismaModule, EmailModule, EmailSchedulingModule, S3Module],
   providers: [NewslettersService],
+  controllers: [NewslettersController],
   exports: [NewslettersService],
 })
 export class NewslettersModule {}

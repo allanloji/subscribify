@@ -7,6 +7,7 @@ import EmailService from 'src/email/email.service';
 @Injectable()
 export class EmailSchedulingService {
   private readonly logger = new Logger(EmailSchedulingService.name);
+
   constructor(
     private readonly emailService: EmailService,
     private readonly schedulerRegistry: SchedulerRegistry,

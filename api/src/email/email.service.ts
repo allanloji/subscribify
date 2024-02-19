@@ -5,19 +5,18 @@ import { ConfigService } from '@nestjs/config';
 import * as aws from '@aws-sdk/client-ses';
 import { render } from '@react-email/render';
 import NewsletterEmail from './templates/email';
-import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Newsletter, Recipient } from '@prisma/client';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { S3Service } from 'src/s3/s3.service';
 
 @Injectable()
 export default class EmailService {
   private nodemailerTransport: Mail;
-  private s3Client: S3Client;
 
   constructor(
     private readonly configService: ConfigService,
     private readonly prisma: PrismaService,
+    private readonly s3Service: S3Service,
   ) {
     const ses = new aws.SESClient({
       region: configService.get('AWS_REGION'),
@@ -26,16 +25,6 @@ export default class EmailService {
         secretAccessKey: configService.get('AWS_SECRET_ACCESS_KEY'),
       },
     });
-
-    const s3 = new S3Client({
-      region: configService.get('AWS_REGION'),
-      credentials: {
-        accessKeyId: configService.get('AWS_ACCESS_KEY_ID'),
-        secretAccessKey: configService.get('AWS_SECRET_ACCESS_KEY'),
-      },
-    });
-
-    this.s3Client = s3;
 
     this.nodemailerTransport = createTransport({
       SES: { ses, aws },
@@ -66,7 +55,7 @@ export default class EmailService {
 
   async sendNewsletter(newsletter: Newsletter & { recipients: Recipient[] }) {
     const { file, name, recipients, id } = newsletter;
-    const fileObject = await this.getS3File(file);
+    const fileObject = await this.s3Service.getS3File(file);
 
     // Create a log entry for the email
     await this.prisma.emailLog.create({
@@ -82,16 +71,5 @@ export default class EmailService {
           await this.sendEmail(name, recipient, fileObject, id),
       ),
     );
-  }
-
-  async getS3File(file: string) {
-    const command = new GetObjectCommand({
-      Bucket: this.configService.get('AWS_BUCKET'),
-      Key: file,
-    });
-
-    const url = await getSignedUrl(this.s3Client, command, { expiresIn: 3600 });
-
-    return { fileName: file, path: url };
   }
 }

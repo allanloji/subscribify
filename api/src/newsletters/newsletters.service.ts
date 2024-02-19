@@ -1,33 +1,20 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateNewsletterDto } from './dto/create-newsletter.dto';
 import { UpdateNewsletterDto } from './dto/update-newsletter.dto';
 import { UnsubscribeNewsletterDto } from './dto/unsubscribe-newsletter.dto';
 import EmailService from 'src/email/email.service';
-import { DeleteObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { ConfigService } from '@nestjs/config';
 import { EmailSchedulingService } from 'src/email-scheduling/email-scheduling.service';
+import { S3Service } from 'src/s3/s3.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class NewslettersService {
-  private s3Client: S3Client;
-  private readonly logger = new Logger(EmailSchedulingService.name);
-
   constructor(
     private readonly prisma: PrismaService,
     private readonly emailService: EmailService,
-    private readonly configService: ConfigService,
     private readonly emailSchedulingService: EmailSchedulingService,
-  ) {
-    const s3 = new S3Client({
-      region: configService.get('AWS_REGION'),
-      credentials: {
-        accessKeyId: configService.get('AWS_ACCESS_KEY_ID'),
-        secretAccessKey: configService.get('AWS_SECRET_ACCESS_KEY'),
-      },
-    });
-    this.s3Client = s3;
-  }
+    private readonly s3Service: S3Service,
+  ) {}
 
   async findAll() {
     return this.prisma.newsletter.findMany({
@@ -126,7 +113,7 @@ export class NewslettersService {
     // Delete the old file if a new one is provided
     if (file) {
       if (newsletter.file) {
-        this.deleteS3File(newsletter.file);
+        this.s3Service.deleteS3File(newsletter.file);
       }
     }
     // Cancel the scheduled email if the scheduledAt field is removed
@@ -164,7 +151,7 @@ export class NewslettersService {
       const newsletter = await this.prisma.newsletter.delete({
         where: { id },
       });
-      this.deleteS3File(newsletter.file);
+      this.s3Service.deleteS3File(newsletter.file);
       if (newsletter.scheduledAt) {
         this.emailSchedulingService.cancelScheduledEmail(id);
       }
@@ -228,18 +215,5 @@ export class NewslettersService {
     }
 
     return this.emailService.sendNewsletter(newsletter);
-  }
-
-  async deleteS3File(file: string) {
-    const command = new DeleteObjectCommand({
-      Bucket: this.configService.get('AWS_BUCKET'),
-      Key: file,
-    });
-
-    try {
-      await this.s3Client.send(command);
-    } catch (err) {
-      console.error(err);
-    }
   }
 }
