@@ -1,12 +1,11 @@
 import { Spacer } from "@/components/ui";
-import { API_URL } from "@/utils/constants";
 import { useQuery } from "@tanstack/react-query";
-
 import Newsletter from "../Newsletter";
 import * as S from "./NewslettersList.styles";
 import NewslettersListPlaceholder from "./NewslettersList.placeholder";
 import { BadgeX } from "lucide-react";
 import NewslettersListError from "./NewslettersList.error";
+import { queries } from "@/api/queries";
 
 function NewslettersList() {
   const {
@@ -14,27 +13,14 @@ function NewslettersList() {
     isLoading: isLoadingNewsletters,
     isError: isErrorNewsletters,
   } = useQuery({
-    queryKey: ["newsletters"],
-    queryFn: async () => {
-      const response = await fetch(`${API_URL}/newsletters`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch newsletters");
-      }
-
-      return response.json();
-    },
+    ...queries.newsletters.all,
   });
 
   if (isLoadingNewsletters) {
     return <NewslettersListPlaceholder />;
   }
 
-  if (isErrorNewsletters) {
+  if (isErrorNewsletters || !newsletters) {
     return <NewslettersListError />;
   }
 
@@ -59,13 +45,7 @@ function NewslettersList() {
       ) : (
         <S.Container>
           {newsletters?.map((newsletter) => (
-            <Newsletter
-              key={newsletter.id}
-              name={newsletter.name}
-              recipients={newsletter.recipients.length}
-              id={newsletter.id}
-              scheduledAt={newsletter.scheduledAt}
-            />
+            <Newsletter key={newsletter.id} newsletter={newsletter} />
           ))}
         </S.Container>
       )}

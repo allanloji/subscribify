@@ -12,9 +12,16 @@ import * as S from "./EditNewsletter.styles";
 import { getBackground } from "../Dashboard/components/Newsletter/utils";
 import { getFile, uploadFile } from "@/utils/s3";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { API_URL } from "@/utils/constants";
 import { useRouter } from "next/router";
 import { add, format } from "date-fns";
+import { queries } from "@/api/queries";
+import { NewsletterEntity, UpdateNewsletterDto } from "@/api/Api";
+import { api } from "@/api/utils";
+import { toast } from "sonner";
+
+interface EditNewsletterProps {
+  newsletter: NewsletterEntity;
+}
 
 type Recipient = {
   value: string;
@@ -27,33 +34,23 @@ type NewsletterForm = {
   scheduledAt: string;
 };
 
-type Newsletter = {
-  id: string;
-  name: string;
-  file: string;
-  recipients: string[];
-};
-
-function EditNewsletter({ newsletter }: any) {
+function EditNewsletter({ newsletter }: EditNewsletterProps) {
   const queryClient = useQueryClient();
   const router = useRouter();
   const { mutate, isPending } = useMutation({
-    mutationFn: async (data) => {
-      const response = await fetch(`${API_URL}/newsletters/${newsletter.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      return response.json();
+    mutationFn: async (data: UpdateNewsletterDto) => {
+      const response = await api.newsletters.update(newsletter.id, data);
+      return response.data;
     },
     onSuccess: () => {
+      toast.success("Newsletter was updated! 🚀");
       queryClient.invalidateQueries({
-        queryKey: ["newsletter", newsletter.id],
+        queryKey: queries.newsletters._def,
       });
       router.push("/");
+    },
+    onError: () => {
+      toast.error("Failed to update newsletter");
     },
   });
 
@@ -62,7 +59,9 @@ function EditNewsletter({ newsletter }: any) {
       defaultValues: {
         name: newsletter.name,
         recipients: [
-          ...newsletter?.recipients?.map((r) => ({ value: r.email })),
+          ...newsletter?.recipients.map((recipient) => ({
+            value: recipient.email,
+          })),
         ],
         ...(newsletter.scheduledAt && {
           scheduledAt: format(
@@ -100,7 +99,7 @@ function EditNewsletter({ newsletter }: any) {
     recipients,
     scheduledAt,
   }: NewsletterForm) => {
-    let data: any = {
+    let data: UpdateNewsletterDto = {
       name,
       recipients: recipients.map((r) => r.value),
       ...(scheduledAt &&

@@ -1,5 +1,4 @@
 import { Spacer } from "@/components/ui";
-import { API_URL } from "@/utils/constants";
 import { useQuery } from "@tanstack/react-query";
 import {
   AreaChart,
@@ -12,6 +11,7 @@ import {
 import * as S from "./UnsubscribesChart.styles";
 import UnsubscribesChartPlaceholder from "./UnsubscribesChart.placeholder";
 import UnsubscribesChartError from "./UnsubscribesChart.error";
+import { queries } from "@/api/queries";
 
 function UnsubscribesChart() {
   const {
@@ -19,19 +19,11 @@ function UnsubscribesChart() {
     isLoading: isLoadingUnsubscribesData,
     isError: isErrorUnsubscribesData,
   } = useQuery({
-    queryKey: ["unsubscribes"],
-    queryFn: async () => {
-      const response = await fetch(`${API_URL}/unsubscribes`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      return response.json();
-    },
-    select: (data) => {
-      return data.map((d: any) => ({
-        name: d.date,
-        count: d.count,
+    ...queries.unsubscribes.all,
+    select: (logs) => {
+      return logs.map((log) => ({
+        name: log.date,
+        count: log.count,
       }));
     },
   });
@@ -40,7 +32,7 @@ function UnsubscribesChart() {
     return <UnsubscribesChartPlaceholder />;
   }
 
-  if (isErrorUnsubscribesData) {
+  if (isErrorUnsubscribesData || !unsubscribesData) {
     return <UnsubscribesChartError />;
   }
 

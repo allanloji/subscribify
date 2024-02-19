@@ -1,37 +1,24 @@
 import { Spacer } from "@/components/ui";
-import { API_URL } from "@/utils/constants";
 import { useQuery } from "@tanstack/react-query";
 import StatCard from "../StatCard";
 import { MailCheck, UserX, Users } from "lucide-react";
 import * as S from "./GeneralStats.styles";
 import GeneralStatsPlaceholder from "./GeneralStats.placeholder";
 import GeneralStatsError from "./GeneralStats.error";
+import { queries } from "@/api/queries";
 
 function GeneralStats() {
   const {
     data: stats,
     isLoading: isLoadingStats,
     isError: isErrorStats,
-  } = useQuery({
-    queryKey: ["stats"],
-    queryFn: async () => {
-      const response = await fetch(`${API_URL}/statistics`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Failed to fetch stats");
-      }
-      return response.json();
-    },
-  });
+  } = useQuery({ ...queries.stats.all });
 
   if (isLoadingStats) {
     return <GeneralStatsPlaceholder />;
   }
 
-  if (isErrorStats) {
+  if (isErrorStats || !stats) {
     return <GeneralStatsError />;
   }
 

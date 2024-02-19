@@ -5,9 +5,10 @@ import TextInput from "../ui/TextInput";
 import * as S from "./CreateNewsletter.styles";
 import { uploadFile } from "@/utils/s3";
 import { useMutation } from "@tanstack/react-query";
-import { API_URL } from "@/utils/constants";
 import { useRouter } from "next/router";
 import { add, format } from "date-fns";
+import { api } from "@/api/utils";
+import { CreateNewsletterDto } from "@/api/Api";
 
 type Recipient = {
   value: string;
@@ -20,33 +21,12 @@ type NewsletterForm = {
   scheduledAt: string;
 };
 
-type Newsletter = {
-  id: string;
-  name: string;
-  file: string;
-  recipients: string[];
-};
-
-type CreateNewsletterBody = {
-  name: string;
-  file: string;
-  recipients: string[];
-  scheduledAt?: string;
-};
-
 function CreateNewsletter() {
   const router = useRouter();
   const { mutate, isPending } = useMutation({
-    mutationFn: async (data) => {
-      const response = await fetch(`${API_URL}/newsletters`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      return response.json();
+    mutationFn: async (data: CreateNewsletterDto) => {
+      const response = await api.newsletters.create(data);
+      return response.data;
     },
     onSuccess: () => {
       router.push("/");
@@ -78,7 +58,7 @@ function CreateNewsletter() {
     scheduledAt,
   }: NewsletterForm) => {
     const fileKey = (await uploadFile(file[0])) || "";
-    const data: CreateNewsletterBody = {
+    const data: CreateNewsletterDto = {
       name,
       file: fileKey,
       recipients: recipients.map((r) => r.value),

@@ -4,36 +4,32 @@ import { Users, Send, Pencil, Clock3, Trash2 } from "lucide-react";
 import { getBackground } from "./utils";
 import Link from "next/link";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { API_URL } from "@/utils/constants";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import NewsletterPlaceholder from "./Newsletter.placeholder";
+import { NewsletterEntity } from "@/api/Api";
+import { api } from "@/api/utils";
+import { queries } from "@/api/queries";
 
 interface NewsletterProps {
-  name: string;
-  recipients: number;
-  id: string;
-  scheduledAt?: string;
+  newsletter: NewsletterEntity;
 }
 
-function Newsletter({ name, recipients, id, scheduledAt }: NewsletterProps) {
+function Newsletter({
+  newsletter: { name, recipients, id, scheduledAt },
+}: NewsletterProps) {
   const queryClient = useQueryClient();
 
   const { mutate: send } = useMutation({
     mutationFn: async () => {
-      const response = await fetch(`${API_URL}/newsletters/${id}/send`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await api.newsletters.send(id);
 
       if (!response.ok) {
         throw new Error("Failed to send newsletter");
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["statistics"] });
+      queryClient.invalidateQueries({ queryKey: queries.stats._def });
       toast.success("Newsletter was sent! 🚀");
     },
     onError: () => {
@@ -43,12 +39,7 @@ function Newsletter({ name, recipients, id, scheduledAt }: NewsletterProps) {
 
   const { mutate: deleteNewsletter } = useMutation({
     mutationFn: async () => {
-      const response = await fetch(`${API_URL}/newsletters/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await api.newsletters.remove(id);
 
       if (!response.ok) {
         throw new Error("Failed to delete newsletter");
@@ -56,7 +47,7 @@ function Newsletter({ name, recipients, id, scheduledAt }: NewsletterProps) {
     },
     onSuccess: () => {
       toast.success("Newsletter was deleted! 🚀");
-      queryClient.invalidateQueries({ queryKey: ["newsletters"] });
+      queryClient.invalidateQueries({ queryKey: queries.newsletters._def });
     },
     onError: () => {
       toast.error("Failed to delete newsletter");
@@ -64,7 +55,7 @@ function Newsletter({ name, recipients, id, scheduledAt }: NewsletterProps) {
   });
 
   const handleSendPress = () => {
-    if (recipients === 0) {
+    if (recipients.length === 0) {
       toast.error(
         "You need to have at least one recipient to send the newsletter"
       );
@@ -110,7 +101,7 @@ function Newsletter({ name, recipients, id, scheduledAt }: NewsletterProps) {
         <S.RecipientsContainer>
           <Users />
           <Spacer horizontal size={0.5} />
-          <S.Subtitle>{`${recipients}`}</S.Subtitle>
+          <S.Subtitle>{`${recipients.length}`}</S.Subtitle>
           {scheduledAt ? (
             <>
               <Spacer horizontal size={0.5} />|

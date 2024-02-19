@@ -4,7 +4,7 @@ import StatCardPlaceholder from "./StatCard.placeholder";
 
 interface StatCardProps {
   title: string;
-  value: string;
+  value: number | string;
   icon: JSX.Element;
   color: string;
 }

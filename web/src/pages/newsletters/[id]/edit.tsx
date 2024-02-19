@@ -1,5 +1,5 @@
+import { queries } from "@/api/queries";
 import EditNewsletter from "@/components/EditNewsletter";
-import { API_URL } from "@/utils/constants";
 import { useQuery } from "@tanstack/react-query";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -9,15 +9,7 @@ export default function EditNewsLetterPage() {
   const { id } = router.query;
 
   const { data: newsletter, isLoading } = useQuery({
-    queryKey: ["newsletter", id],
-    queryFn: async () => {
-      const response = await fetch(`${API_URL}/newsletters/${id}`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      return response.json();
-    },
+    ...queries.newsletters.detail(id as string),
     enabled: !!id,
   });
 
