@@ -39,7 +39,7 @@ function NewslettersList() {
   }
 
   return (
-    <>
+    <section>
       <h2>NewsLetters</h2>
       <Spacer />
       <S.CreateLink href="/newsletters/create">
@@ -69,7 +69,7 @@ function NewslettersList() {
           ))}
         </S.Container>
       )}
-    </>
+    </section>
   );
 }
 

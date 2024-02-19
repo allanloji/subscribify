@@ -36,7 +36,7 @@ function GeneralStats() {
   }
 
   return (
-    <>
+    <section>
       <h2>Overall Stats</h2>
       <Spacer />
       <S.Container>
@@ -59,7 +59,7 @@ function GeneralStats() {
           color="#F3B95F"
         />
       </S.Container>
-    </>
+    </section>
   );
 }
 

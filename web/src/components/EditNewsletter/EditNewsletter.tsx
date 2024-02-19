@@ -35,7 +35,6 @@ type Newsletter = {
 };
 
 function EditNewsletter({ newsletter }: any) {
-  console.log(newsletter);
   const queryClient = useQueryClient();
   const router = useRouter();
   const { mutate, isPending } = useMutation({
@@ -120,7 +119,7 @@ function EditNewsletter({ newsletter }: any) {
 
   return (
     <>
-      <S.BackButton href="/">
+      <S.BackButton href="/" aria-label="Go back">
         <ChevronLeft />
       </S.BackButton>
       <Spacer size={2} />
@@ -169,7 +168,10 @@ function EditNewsletter({ newsletter }: any) {
             <div>
               <label>Recipients</label>
               <Spacer horizontal size={0.5} />
-              <IconButton onClick={() => append({ value: "" })}>
+              <IconButton
+                onClick={() => append({ value: "" })}
+                aria-label="Add recipient"
+              >
                 <Plus size={16} />
               </IconButton>
               {recipients.map((recipient, index) => (
@@ -188,7 +190,10 @@ function EditNewsletter({ newsletter }: any) {
                       />
                     </div>
                     <Spacer horizontal size={0.5} />
-                    <IconButton onClick={() => remove(index)}>
+                    <IconButton
+                      onClick={() => remove(index)}
+                      aria-label={`Delete recipient ${index + 1}`}
+                    >
                       <Trash2 size={16} />
                     </IconButton>
                   </S.RecipientContainer>

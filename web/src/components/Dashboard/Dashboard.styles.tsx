@@ -36,7 +36,7 @@ export const MessageContent = styled.div`
   }
 `;
 
-export const MessageTitle = styled.h2`
+export const MessageTitle = styled.p`
   font-size: 2rem;
   color: #000;
   font-weight: normal;

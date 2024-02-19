@@ -1,6 +1,7 @@
 import EditNewsletter from "@/components/EditNewsletter";
 import { API_URL } from "@/utils/constants";
 import { useQuery } from "@tanstack/react-query";
+import Head from "next/head";
 import { useRouter } from "next/router";
 
 export default function EditNewsLetterPage() {
@@ -17,7 +18,18 @@ export default function EditNewsLetterPage() {
       });
       return response.json();
     },
+    enabled: !!id,
   });
 
-  return <>{isLoading ? null : <EditNewsletter newsletter={newsletter} />}</>;
+  return (
+    <>
+      <Head>
+        <title>Edit newsletter</title>
+        <meta name="description" content="Subscribify - Edit newsletter" />
+      </Head>
+      {isLoading || !newsletter ? null : (
+        <EditNewsletter newsletter={newsletter} />
+      )}
+    </>
+  );
 }

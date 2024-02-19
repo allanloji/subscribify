@@ -23,7 +23,7 @@ export const IconContainer = styled.div<{ backgroundColor: string }>`
   padding: 1rem;
 `;
 
-export const Title = styled.p`
+export const Title = styled.span`
   font-size: 1.2rem;
   font-weight: 600;
 `;

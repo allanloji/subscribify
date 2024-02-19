@@ -8,7 +8,7 @@ import NewslettersList from "./components/NewslettersList";
 
 function Dashboard() {
   return (
-    <main>
+    <>
       <S.Title>subscribify</S.Title>
       <S.Subtitle>Manage your newsletters in an easy way 🗞️</S.Subtitle>
       <Spacer size={2} />
@@ -38,7 +38,7 @@ function Dashboard() {
       <UnsubscribesChart />
       <Spacer size={2} />
       <NewslettersList />
-    </main>
+    </>
   );
 }
 
