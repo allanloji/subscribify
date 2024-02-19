@@ -7,6 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { API_URL } from "@/utils/constants";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import NewsletterPlaceholder from "./Newsletter.placeholder";
 
 interface NewsletterProps {
   name: string;
@@ -75,5 +76,7 @@ function Newsletter({ name, recipients, id, scheduledAt }: NewsletterProps) {
     </S.Container>
   );
 }
+
+Newsletter.Placeholder = NewsletterPlaceholder;
 
 export default Newsletter;

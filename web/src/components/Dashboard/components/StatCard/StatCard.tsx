@@ -1,5 +1,6 @@
 import { Spacer } from "@/components/ui";
 import * as S from "./StatCard.styles";
+import StatCardPlaceholder from "./StatCard.placeholder";
 
 interface StatCardProps {
   title: string;
@@ -21,5 +22,7 @@ function StatCard({ title, value, icon, color }: StatCardProps) {
     </S.Container>
   );
 }
+
+StatCard.Placeholder = StatCardPlaceholder;
 
 export default StatCard;
