@@ -21,7 +21,7 @@ export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     async function initMocks() {
       if (typeof window !== "undefined") {
-        const { worker } = await import("@/utils/tests/server");
+        const { worker } = await import("@/utils/tests/worker");
         await worker.start();
         setShouldRender(true);
       }

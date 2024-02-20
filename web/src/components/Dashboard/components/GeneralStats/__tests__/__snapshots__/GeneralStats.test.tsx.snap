@@ -1,0 +1,61 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`renders the general stats placeholder 1`] = `
+<div>
+  <span
+    aria-busy="true"
+    aria-live="polite"
+  >
+    <span
+      class="react-loading-skeleton"
+      style="width: 300px; height: 24px;"
+    >
+      ‌
+    </span>
+    <br />
+  </span>
+  <div
+    class="css-g1gnh4"
+  />
+  <div
+    class="css-1bhr2z7"
+  >
+    <span
+      aria-busy="true"
+      aria-live="polite"
+    >
+      <span
+        class="react-loading-skeleton"
+        style="width: 300px; height: 100px; border-radius: 0.75rem;"
+      >
+        ‌
+      </span>
+      <br />
+    </span>
+    <span
+      aria-busy="true"
+      aria-live="polite"
+    >
+      <span
+        class="react-loading-skeleton"
+        style="width: 300px; height: 100px; border-radius: 0.75rem;"
+      >
+        ‌
+      </span>
+      <br />
+    </span>
+    <span
+      aria-busy="true"
+      aria-live="polite"
+    >
+      <span
+        class="react-loading-skeleton"
+        style="width: 300px; height: 100px; border-radius: 0.75rem;"
+      >
+        ‌
+      </span>
+      <br />
+    </span>
+  </div>
+</div>
+`;

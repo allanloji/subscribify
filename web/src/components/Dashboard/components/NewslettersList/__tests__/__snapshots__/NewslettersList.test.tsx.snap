@@ -1,0 +1,77 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`renders the newsletters list placeholder 1`] = `
+<div>
+  <span
+    aria-busy="true"
+    aria-live="polite"
+  >
+    <span
+      class="react-loading-skeleton"
+      style="width: 300px; height: 24px;"
+    >
+      ‌
+    </span>
+    <br />
+  </span>
+  <div
+    class="css-g1gnh4"
+  />
+  <span
+    aria-busy="true"
+    aria-live="polite"
+  >
+    <span
+      class="react-loading-skeleton"
+      style="width: 500px; height: 24px;"
+    >
+      ‌
+    </span>
+    <br />
+  </span>
+  <div
+    class="css-181knz5"
+    size="2"
+  />
+  <div
+    class="css-x91qcr"
+  >
+    <span
+      aria-busy="true"
+      aria-live="polite"
+    >
+      <span
+        class="react-loading-skeleton"
+        style="height: 250px;"
+      >
+        ‌
+      </span>
+      <br />
+    </span>
+    <span
+      aria-busy="true"
+      aria-live="polite"
+    >
+      <span
+        class="react-loading-skeleton"
+        style="height: 250px;"
+      >
+        ‌
+      </span>
+      <br />
+    </span>
+    <span
+      aria-busy="true"
+      aria-live="polite"
+    >
+      <span
+        class="react-loading-skeleton"
+        style="height: 250px;"
+      >
+        ‌
+      </span>
+      <br />
+    </span>
+  </div>
+</div>
+`;
