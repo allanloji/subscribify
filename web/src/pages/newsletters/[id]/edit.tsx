@@ -1,5 +1,6 @@
 import { queries } from "@/api/queries";
 import EditNewsletter from "@/components/EditNewsletter";
+import NotFound from "@/components/NotFound";
 import { useQuery } from "@tanstack/react-query";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -19,7 +20,9 @@ export default function EditNewsLetterPage() {
         <title>Edit newsletter</title>
         <meta name="description" content="Subscribify - Edit newsletter" />
       </Head>
-      {isLoading || !newsletter ? null : (
+      {isLoading || !newsletter ? (
+        <NotFound />
+      ) : (
         <EditNewsletter newsletter={newsletter} />
       )}
     </>
