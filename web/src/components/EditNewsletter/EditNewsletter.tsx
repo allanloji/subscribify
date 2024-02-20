@@ -102,12 +102,14 @@ function EditNewsletter({ newsletter }: EditNewsletterProps) {
     let data: UpdateNewsletterDto = {
       name,
       recipients: recipients.map((r) => r.value),
+      // Only add the scheduledAt if it was changed
       ...(scheduledAt &&
         scheduledAt !== "" && {
           scheduledAt: new Date(scheduledAt).toISOString(),
         }),
     };
 
+    // Only add the file if it was changed
     if (file.length > 0) {
       const fileKey = (await uploadFile(file[0])) || "";
       data.file = fileKey;

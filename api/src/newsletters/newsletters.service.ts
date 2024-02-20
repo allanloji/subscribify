@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateNewsletterDto } from './dto/create-newsletter.dto';
 import { UpdateNewsletterDto } from './dto/update-newsletter.dto';
 import { UnsubscribeNewsletterDto } from './dto/unsubscribe-newsletter.dto';
@@ -9,6 +9,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class NewslettersService {
+  private readonly logger = new Logger(NewslettersService.name);
   constructor(
     private readonly prisma: PrismaService,
     private readonly emailService: EmailService,
@@ -153,10 +154,12 @@ export class NewslettersService {
       });
       this.s3Service.deleteS3File(newsletter.file);
       if (newsletter.scheduledAt) {
+        this.logger.log(`Cancelling scheduled email for newsletter #${id}`);
         this.emailSchedulingService.cancelScheduledEmail(id);
       }
       return newsletter;
     } catch (e) {
+      this.logger.error(e);
       throw new NotFoundException(`Newsletter #${id} not found`);
     }
   }

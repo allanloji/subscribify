@@ -67,7 +67,7 @@ export default class EmailService {
 
     await Promise.all(
       recipients.map(
-        async (recipient: any) =>
+        async (recipient) =>
           await this.sendEmail(name, recipient, fileObject, id),
       ),
     );

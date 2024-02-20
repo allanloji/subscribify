@@ -76,6 +76,7 @@ function Newsletter({
           href={`/newsletters/${id}/edit`}
           className="hint--top"
           aria-label="Edit newsletter"
+          data-testid={`edit-newsletter-${id}`}
         >
           <Pencil />
         </Link>
@@ -84,6 +85,7 @@ function Newsletter({
           onClick={handleSendPress}
           className="hint--top-left"
           aria-label="Send newsletter"
+          data-testid={`send-newsletter-${id}`}
         >
           <Send />
         </S.ButtonContainer>
@@ -92,6 +94,7 @@ function Newsletter({
           onClick={handleDeletePress}
           className="hint--top-left"
           aria-label="Delete newsletter"
+          data-testid={`delete-newsletter-${id}`}
         >
           <Trash2 />
         </S.ButtonContainer>
@@ -101,14 +104,16 @@ function Newsletter({
         <S.RecipientsContainer>
           <Users />
           <Spacer horizontal size={0.5} />
-          <S.Subtitle>{`${recipients.length}`}</S.Subtitle>
+          <S.Subtitle
+            data-testid={`${id}-number-of-recipients`}
+          >{`${recipients.length}`}</S.Subtitle>
           {scheduledAt ? (
             <>
               <Spacer horizontal size={0.5} />|
               <Spacer horizontal size={0.5} />
               <Clock3 />
               <Spacer horizontal size={0.5} />
-              <S.Subtitle>{`${format(
+              <S.Subtitle data-testid={`${id}-scheduled-at`}>{`${format(
                 scheduledAt,
                 "dd/MM/yy', 'HH:mm"
               )}`}</S.Subtitle>

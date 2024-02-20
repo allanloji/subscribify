@@ -28,18 +28,18 @@ model Recipient {
 }
 
 model EmailLog {
-  id           String     @id @default(uuid())
-  sentAt       DateTime   @default(now())
+  id           String      @id @default(uuid())
+  sentAt       DateTime    @default(now())
   emailsSent   Int
-  newsletterId String
-  newsletter   Newsletter @relation(fields: [newsletterId], references: [id])
+  newsletterId String?
+  newsletter   Newsletter? @relation(fields: [newsletterId], references: [id], onDelete: SetNull)
 }
 
 model UnsubscribeLog {
-  id           String     @id @default(uuid())
-  newsletterId String
+  id           String      @id @default(uuid())
+  newsletterId String?
   recipientId  String
-  createdAt    DateTime   @default(now())
-  newsletter   Newsletter @relation(fields: [newsletterId], references: [id])
-  recipient    Recipient  @relation(fields: [recipientId], references: [id])
+  createdAt    DateTime    @default(now())
+  newsletter   Newsletter? @relation(fields: [newsletterId], references: [id], onDelete: SetNull)
+  recipient    Recipient   @relation(fields: [recipientId], references: [id])
 }
