@@ -43,12 +43,67 @@ Subscribify is a project that enables users to craft and dispatch newsletters ef
     docker-compose exec api npm run seed
 ```
 The API is run on port 5000, the web dashboard on port 3000.
-- [Web](http://localhost:3000/)
-- [API](http://localhost:5000/)
+
+You can also run it locally installing dependencies on each folder and running `yarn start:dev` on api and `yarn dev` on web
 
 
 ## Documentation
 
-- [API Swagger](http://localhost:5000/api)
+- [API Swagger](https://subscribify-production.up.railway.app/api)
+### DB
+```mermaid
+classDiagram
+    Newsletter "1" -- "*" Recipient : newsletters
+    Newsletter "1" -- "*" EmailLog : emailLogs
+    Newsletter "1" -- "*" UnsubscribeLog : unsubscribeLogs
+    Recipient "1" -- "*" UnsubscribeLog : unsubscribeLogs
+    EmailLog "0..1" -- "1" Newsletter : newsletter
+    UnsubscribeLog "0..1" -- "1" Newsletter : newsletter
+    UnsubscribeLog "1" -- "1" Recipient : recipient
+
+    class Newsletter {
+        id String
+        file String
+        name String
+        scheduledAt DateTime
+    }
+
+    class Recipient {
+        id String
+        email String
+    }
+
+    class EmailLog {
+        id String
+        sentAt DateTime
+        emailsSent Int
+        newsletterId String
+    }
+
+    class UnsubscribeLog {
+        id String
+        newsletterId String
+        recipientId String
+        createdAt DateTime
+    }
+```
 
 
+## Demo
+https://subscribify-iota.vercel.app/
+
+
+
+## Running Tests
+
+### Unit tests
+To run the unit tests, run the following command on web folder
+
+```bash
+  yarn test
+```
+### E2E tests
+To run the e2e test, run the following command on web folder
+```bash
+  yarn test:e2e
+``````
