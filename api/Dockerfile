@@ -1,13 +1,16 @@
-FROM node:18
+FROM node:alpine As development
+
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY --chown=node:node package*.json ./
 
 RUN npm install
 
-COPY . .
+# Bundle app source
+COPY --chown=node:node . .
 
-RUN npm run build
+RUN npm run prisma:generate
 
-CMD [ "npm", "run", "start:dev" ]
+# Use the node user from the image (instead of the root user)
+USER node

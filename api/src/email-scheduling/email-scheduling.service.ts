@@ -21,9 +21,6 @@ export class EmailSchedulingService {
     const job = new CronJob(date, () => {
       this.emailService.sendNewsletter(newsletter);
     });
-    this.logger.log(
-      `Scheduling email for newsletter #${newsletter.id} at ${date}`,
-    );
 
     this.schedulerRegistry.addCronJob(`Newsletter-${newsletter.id}`, job);
 
