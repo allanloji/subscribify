@@ -11,6 +11,3 @@ RUN npm install
 COPY --chown=node:node . .
 
 RUN npm run prisma:generate
-
-# Use the node user from the image (instead of the root user)
-USER node

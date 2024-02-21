@@ -24,9 +24,9 @@ export class AppService {
       ]);
 
     return {
-      totalRecipients,
-      totalEmailsSent: totalEmailsSent._sum.emailsSent,
-      totalUnsubscribes,
+      totalRecipients: totalRecipients || 0,
+      totalEmailsSent: totalEmailsSent._sum.emailsSent || 0,
+      totalUnsubscribes: totalUnsubscribes || 0,
     };
   }
 

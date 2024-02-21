@@ -1,11 +1,9 @@
-FROM node:alpine
+FROM node:alpine As development
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY --chown=node:node package*.json ./
 
 RUN npm install
 
-COPY . .
-
-CMD [ "npm", "run", "dev" ]
+COPY --chown=node:node . .
