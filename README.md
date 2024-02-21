@@ -1,5 +1,8 @@
 
 # Subscribify
+<p align="center"><img src=https://github.com/allanloji/subscribify/assets/33562292/16139390-cd8a-496d-ab30-3cc295de8547 width=150 /></p>
+
+
 
 
 Subscribify is a project that enables users to craft and dispatch newsletters effortlessly. With Subscribify, you can create engaging newsletters, manage subscriber lists, and schedule distributions seamlessly. 
@@ -48,7 +51,6 @@ You can also run it locally installing dependencies on each folder and running `
 
 
 ## Documentation
-
 - [API Swagger](https://subscribify-production.up.railway.app/api)
 ### DB
 ```mermaid
@@ -87,10 +89,15 @@ classDiagram
         createdAt DateTime
     }
 ```
+### Architecture
+<img src=https://github.com/allanloji/subscribify/assets/33562292/4c9462a7-cb7b-4767-928f-ef085d96de6a width=500 />
+
 
 
 ## Demo
-https://subscribify-iota.vercel.app/
+![Screenshot from 2024-02-21 16-49-03](https://github.com/allanloji/subscribify/assets/33562292/b7392425-9039-496c-858d-1e35642976ca)
+
+[Demo link](https://subscribify-iota.vercel.app/)
 
 
 
@@ -107,3 +114,10 @@ To run the e2e test, run the following command on web folder
 ```bash
   yarn test:e2e
 ``````
+
+## Next improvements
+Some improvements that could be added on next releases
+- Ability to have diferent admin users
+- More metrics and info
+- More files types accepted
+- Ability to customize email style and text
