@@ -6,8 +6,8 @@ import * as aws from '@aws-sdk/client-ses';
 import { render } from '@react-email/render';
 import NewsletterEmail from './templates/email';
 import { Newsletter, Recipient } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { S3Service } from 'src/s3/s3.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { S3Service } from '../s3/s3.service';
 
 @Injectable()
 export default class EmailService {

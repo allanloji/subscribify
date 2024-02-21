@@ -17,7 +17,7 @@ function FileInput(
 ) {
   return (
     <>
-      {label ? <S.Label htmlFor={name}>{label}</S.Label> : null}
+      {label ? <label htmlFor={name}>{label}</label> : null}
       <Spacer size={0.5} />
       <S.Input
         type="file"

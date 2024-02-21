@@ -37,22 +37,23 @@ type NewsletterForm = {
 function EditNewsletter({ newsletter }: EditNewsletterProps) {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { mutate, isPending } = useMutation({
-    mutationFn: async (data: UpdateNewsletterDto) => {
-      const response = await api.newsletters.update(newsletter.id, data);
-      return response.data;
-    },
-    onSuccess: () => {
-      toast.success("Newsletter was updated! 🚀");
-      queryClient.invalidateQueries({
-        queryKey: queries.newsletters._def,
-      });
-      router.push("/");
-    },
-    onError: () => {
-      toast.error("Failed to update newsletter");
-    },
-  });
+  const { mutate: updateNewsletter, isPending: isPendingUpdateNewsletter } =
+    useMutation({
+      mutationFn: async (data: UpdateNewsletterDto) => {
+        const response = await api.newsletters.update(newsletter.id, data);
+        return response.data;
+      },
+      onSuccess: () => {
+        toast.success("Newsletter was updated! 🚀");
+        queryClient.invalidateQueries({
+          queryKey: queries.newsletters._def,
+        });
+        router.push("/");
+      },
+      onError: () => {
+        toast.error("Failed to update newsletter");
+      },
+    });
 
   const { register, handleSubmit, control, formState } =
     useForm<NewsletterForm>({
@@ -115,7 +116,7 @@ function EditNewsletter({ newsletter }: EditNewsletterProps) {
       data.file = fileKey;
     }
 
-    mutate(data);
+    updateNewsletter(data);
   };
 
   return (
@@ -213,8 +214,8 @@ function EditNewsletter({ newsletter }: EditNewsletterProps) {
             />
             <Spacer size={2} />
             <S.Container>
-              <Button type="submit" disabled={isPending}>
-                Update
+              <Button type="submit" disabled={isPendingUpdateNewsletter}>
+                {isPendingUpdateNewsletter ? "Updating" : "Update"}
               </Button>
             </S.Container>
           </form>

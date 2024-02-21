@@ -2,10 +2,10 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateNewsletterDto } from './dto/create-newsletter.dto';
 import { UpdateNewsletterDto } from './dto/update-newsletter.dto';
 import { UnsubscribeNewsletterDto } from './dto/unsubscribe-newsletter.dto';
-import EmailService from 'src/email/email.service';
-import { EmailSchedulingService } from 'src/email-scheduling/email-scheduling.service';
-import { S3Service } from 'src/s3/s3.service';
-import { PrismaService } from 'src/prisma/prisma.service';
+import EmailService from '../email/email.service';
+import { EmailSchedulingService } from '../email-scheduling/email-scheduling.service';
+import { S3Service } from '../s3/s3.service';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class NewslettersService {
@@ -82,6 +82,7 @@ export class NewslettersService {
       },
     });
 
+    // Schedule the email if the scheduledAt field is provided
     if (scheduledAt) {
       this.emailSchedulingService.scheduleEmail(newsletter);
     }
@@ -117,6 +118,7 @@ export class NewslettersService {
         this.s3Service.deleteS3File(newsletter.file);
       }
     }
+
     // Cancel the scheduled email if the scheduledAt field is removed
     if (!scheduledAt && newsletter.scheduledAt) {
       await this.emailSchedulingService.cancelScheduledEmail(id);
@@ -141,8 +143,10 @@ export class NewslettersService {
       if (scheduledAt) {
         this.emailSchedulingService.scheduleEmail(updatedNewsletter);
       }
+
       return updatedNewsletter;
-    } catch (e) {
+    } catch (error) {
+      this.logger.error(error);
       throw new NotFoundException(`Newsletter #${id} not found`);
     }
   }
@@ -158,8 +162,8 @@ export class NewslettersService {
         this.emailSchedulingService.cancelScheduledEmail(id);
       }
       return newsletter;
-    } catch (e) {
-      this.logger.error(e);
+    } catch (error) {
+      this.logger.error(error);
       throw new NotFoundException(`Newsletter #${id} not found`);
     }
   }
@@ -211,10 +215,6 @@ export class NewslettersService {
 
     if (!newsletter) {
       throw new NotFoundException(`Newsletter #${id} not found`);
-    }
-
-    if (newsletter.scheduledAt) {
-      return this.emailSchedulingService.scheduleEmail(newsletter);
     }
 
     return this.emailService.sendNewsletter(newsletter);

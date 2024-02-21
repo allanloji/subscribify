@@ -14,17 +14,24 @@ export default function EditNewsLetterPage() {
     enabled: !!id,
   });
 
+  if (isLoading) {
+    return (
+      <>
+        <Head>
+          <title>Edit newsletter</title>
+          <meta name="description" content="Subscribify - Edit newsletter" />
+        </Head>
+      </>
+    );
+  }
+
   return (
     <>
       <Head>
         <title>Edit newsletter</title>
         <meta name="description" content="Subscribify - Edit newsletter" />
       </Head>
-      {isLoading || !newsletter ? (
-        <NotFound />
-      ) : (
-        <EditNewsletter newsletter={newsletter} />
-      )}
+      {!newsletter ? <NotFound /> : <EditNewsletter newsletter={newsletter} />}
     </>
   );
 }

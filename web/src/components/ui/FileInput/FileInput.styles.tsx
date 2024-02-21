@@ -1,7 +1,4 @@
 import styled from "@emotion/styled";
-import { css } from "@emotion/react";
-
-export const Label = styled.label``;
 
 export const Input = styled.input`
   border: 1px solid #ccc;

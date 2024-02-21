@@ -20,39 +20,41 @@ function Newsletter({
 }: NewsletterProps) {
   const queryClient = useQueryClient();
 
-  const { mutate: send } = useMutation({
-    mutationFn: async () => {
-      const response = await api.newsletters.send(id);
+  const { mutate: sendNewsletter, isPending: isPendingSendNewsletter } =
+    useMutation({
+      mutationFn: async () => {
+        const response = await api.newsletters.send(id);
 
-      if (!response.ok) {
-        throw new Error("Failed to send newsletter");
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queries.stats._def });
-      toast.success("Newsletter was sent! 🚀");
-    },
-    onError: () => {
-      toast.error("Failed to send newsletter");
-    },
-  });
+        if (!response.ok) {
+          throw new Error("Failed to send newsletter");
+        }
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: queries.stats._def });
+        toast.success("Newsletter was sent! 🚀");
+      },
+      onError: () => {
+        toast.error("Failed to send newsletter");
+      },
+    });
 
-  const { mutate: deleteNewsletter } = useMutation({
-    mutationFn: async () => {
-      const response = await api.newsletters.remove(id);
+  const { mutate: deleteNewsletter, isPending: isPendingDeleteNewsletter } =
+    useMutation({
+      mutationFn: async () => {
+        const response = await api.newsletters.remove(id);
 
-      if (!response.ok) {
-        throw new Error("Failed to delete newsletter");
-      }
-    },
-    onSuccess: () => {
-      toast.success("Newsletter was deleted! 🚀");
-      queryClient.invalidateQueries({ queryKey: queries.newsletters._def });
-    },
-    onError: () => {
-      toast.error("Failed to delete newsletter");
-    },
-  });
+        if (!response.ok) {
+          throw new Error("Failed to delete newsletter");
+        }
+      },
+      onSuccess: () => {
+        toast.success("Newsletter was deleted! 🚀");
+        queryClient.invalidateQueries({ queryKey: queries.newsletters._def });
+      },
+      onError: () => {
+        toast.error("Failed to delete newsletter");
+      },
+    });
 
   const handleSendPress = () => {
     if (recipients.length === 0) {
@@ -62,7 +64,7 @@ function Newsletter({
       return;
     }
 
-    send();
+    sendNewsletter();
   };
 
   const handleDeletePress = () => {
@@ -82,6 +84,7 @@ function Newsletter({
         </Link>
         <Spacer horizontal size={0.5} />| <Spacer horizontal size={0.5} />
         <S.ButtonContainer
+          disabled={isPendingSendNewsletter}
           onClick={handleSendPress}
           className="hint--top-left"
           aria-label="Send newsletter"
@@ -91,6 +94,7 @@ function Newsletter({
         </S.ButtonContainer>
         <Spacer horizontal size={0.5} />| <Spacer horizontal size={0.5} />
         <S.ButtonContainer
+          disabled={isPendingDeleteNewsletter}
           onClick={handleDeletePress}
           className="hint--top-left"
           aria-label="Delete newsletter"

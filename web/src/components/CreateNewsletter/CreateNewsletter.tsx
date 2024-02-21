@@ -23,15 +23,16 @@ type NewsletterForm = {
 
 function CreateNewsletter() {
   const router = useRouter();
-  const { mutate, isPending } = useMutation({
-    mutationFn: async (data: CreateNewsletterDto) => {
-      const response = await api.newsletters.create(data);
-      return response.data;
-    },
-    onSuccess: () => {
-      router.push("/");
-    },
-  });
+  const { mutate: createNewsletter, isPending: isPendingCreateNewsletter } =
+    useMutation({
+      mutationFn: async (data: CreateNewsletterDto) => {
+        const response = await api.newsletters.create(data);
+        return response.data;
+      },
+      onSuccess: () => {
+        router.push("/");
+      },
+    });
 
   const { register, handleSubmit, control, formState } =
     useForm<NewsletterForm>({
@@ -61,14 +62,14 @@ function CreateNewsletter() {
     const data: CreateNewsletterDto = {
       name,
       file: fileKey,
-      recipients: recipients.map((r) => r.value),
+      recipients: recipients.map((recipient) => recipient.value),
       ...(scheduledAt &&
         scheduledAt !== "" && {
           scheduledAt: new Date(scheduledAt).toISOString(),
         }),
     };
 
-    mutate(data);
+    createNewsletter(data);
   };
 
   return (
@@ -145,6 +146,7 @@ function CreateNewsletter() {
               label="Date and time to send"
               aria-label="Date and time"
               {...register("scheduledAt")}
+              // Set the min date to 5 minutes from now
               min={format(
                 add(new Date(), { minutes: 5 }),
                 "yyyy-MM-dd'T'HH:mm"
@@ -152,8 +154,8 @@ function CreateNewsletter() {
             />
             <Spacer size={2} />
             <S.Container>
-              <Button type="submit" disabled={isPending}>
-                {isPending ? "Creating..." : "Create"}
+              <Button type="submit" disabled={isPendingCreateNewsletter}>
+                {isPendingCreateNewsletter ? "Creating..." : "Create"}
               </Button>
             </S.Container>
           </form>

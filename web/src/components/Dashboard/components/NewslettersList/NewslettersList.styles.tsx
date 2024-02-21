@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const Container = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1000px));
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: 2rem;
 
   @media (max-width: 640px) {

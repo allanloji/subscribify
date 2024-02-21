@@ -4,22 +4,21 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { API_URL } from "@/utils/constants";
 import { Button, Spacer } from "../ui";
 import { toast } from "sonner";
+import { queries } from "@/api/queries";
+import NotFound from "../NotFound";
+import UnsubscribePlaceholder from "./Unsubscribe.placeholder";
 
 function Unsubscribe() {
   const router = useRouter();
 
   const { recipient, newsletter: id } = router.query;
 
-  const { data: newsletter, isLoading } = useQuery({
-    queryKey: ["newsletter", id],
-    queryFn: async () => {
-      const response = await fetch(`${API_URL}/newsletters/${id}`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      return response.json();
-    },
+  const {
+    data: newsletter,
+    isLoading: isLoadingNewsletter,
+    isError: isErrorNewsletter,
+  } = useQuery({
+    ...queries.newsletters.detail(id as string),
   });
 
   const { mutate: unsubscribe } = useMutation({
@@ -39,8 +38,12 @@ function Unsubscribe() {
     },
   });
 
-  if (isLoading) {
-    return null;
+  if (isLoadingNewsletter) {
+    return <UnsubscribePlaceholder />;
+  }
+
+  if (!newsletter || isErrorNewsletter) {
+    return <NotFound />;
   }
 
   return (

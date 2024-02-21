@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import { getBackground } from "./utils";
 import { css } from "@emotion/react";
 
 export const Container = styled.div<{

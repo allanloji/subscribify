@@ -49,6 +49,9 @@ const backgrounds = [
   },
 ];
 
+/**
+ * This function takes a UUID and returns a background object
+ */
 export const getBackground = (id: string) => {
   const sanitizedUuid = id.replace(/-/g, "");
 

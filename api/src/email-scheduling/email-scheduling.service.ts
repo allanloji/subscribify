@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { Newsletter, Recipient } from '@prisma/client';
 import { CronJob } from 'cron';
-import EmailService from 'src/email/email.service';
+import EmailService from '../email/email.service';
 
 @Injectable()
 export class EmailSchedulingService {
@@ -37,8 +37,8 @@ export class EmailSchedulingService {
         `Newsletter-${newsletterId}`,
       );
       job.stop();
-    } catch (e) {
-      this.logger.log(e);
+    } catch (error) {
+      this.logger.error(error);
     }
   }
 }

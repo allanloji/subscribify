@@ -19,7 +19,7 @@ function TextInput(
     <>
       {label ? (
         <>
-          <S.Label htmlFor={name}>{label}</S.Label>
+          <label htmlFor={name}>{label}</label>
           <Spacer size={0.5} />
         </>
       ) : null}
