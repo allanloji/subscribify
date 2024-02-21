@@ -1,10 +1,6 @@
-providers = ["nodejs"]
+[build]
+builder = "nixpacks"
+buildCommand = "yarn build && yarn prisma:generate && yarn prisma:migrate"
 
-[phases.build]
-cmds = ["npm run build"]
-
-[phases.migrations]
-cmds = ["npm run prisma:generate","npm run prisma:migrate"]
-
-[start]
-cmds=["npm run start:prod"]
+[deploy]
+startCommand = "yarn start:prod"
