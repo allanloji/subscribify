@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test("should display the dashboard with info", async ({ page }) => {
-  await page.goto("http://localhost:3000");
+  await page.goto("/");
   const title = page.getByRole("heading", { name: /subscribify/i });
   await expect(title).toBeVisible();
 
