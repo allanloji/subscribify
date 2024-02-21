@@ -1,0 +1,10 @@
+providers = ["nodejs"]
+
+[phases.build]
+cmds = ["npm run build"]
+
+[phases.migrations]
+cmds = ["prisma:migrate"]
+
+[start]
+cmds=["npm run start:prod"]
