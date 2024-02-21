@@ -4,7 +4,7 @@ providers = ["nodejs"]
 cmds = ["npm run build"]
 
 [phases.migrations]
-cmds = ["prisma:migrate"]
+cmds = ["npm run prisma:generate","npm run prisma:migrate"]
 
 [start]
 cmds=["npm run start:prod"]
