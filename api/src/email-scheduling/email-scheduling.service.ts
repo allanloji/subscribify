@@ -28,12 +28,11 @@ export class EmailSchedulingService {
   }
 
   cancelScheduledEmail(newsletterId: string) {
-    this.logger.log(JSON.stringify(this.schedulerRegistry.getCronJobs()));
+    this.logger.log(
+      `Cancelling scheduled email for newsletter #${newsletterId}`,
+    );
     try {
-      const job = this.schedulerRegistry.getCronJob(
-        `Newsletter-${newsletterId}`,
-      );
-      job.stop();
+      this.schedulerRegistry.deleteCronJob(`Newsletter-${newsletterId}`);
     } catch (error) {
       this.logger.error(error);
     }

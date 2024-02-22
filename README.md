@@ -31,8 +31,9 @@ Subscribify is a project that enables users to craft and dispatch newsletters ef
 
 ## Installation
 1. Add .envs files in root, api, and web folders (use .env.example for reference)
+2. Create a Dockerfile file based on the Dockerfile.development or just rename it to Dockerfile
 
-2. Install Subscribify with docker-compose
+3. Install Subscribify with docker-compose
 
 ```bash
     docker-compose up --build

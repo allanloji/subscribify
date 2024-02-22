@@ -119,8 +119,12 @@ export class NewslettersService {
       }
     }
 
-    // Cancel the scheduled email if the scheduledAt field is removed
-    if (!scheduledAt && newsletter.scheduledAt) {
+    // Cancel the scheduled email if the scheduledAt field is removed or a new one is provided
+    if (
+      (!scheduledAt && newsletter.scheduledAt) ||
+      new Date(scheduledAt).toISOString() !==
+        newsletter.scheduledAt?.toISOString()
+    ) {
       await this.emailSchedulingService.cancelScheduledEmail(id);
     }
 
@@ -158,7 +162,6 @@ export class NewslettersService {
       });
       this.s3Service.deleteS3File(newsletter.file);
       if (newsletter.scheduledAt) {
-        this.logger.log(`Cancelling scheduled email for newsletter #${id}`);
         this.emailSchedulingService.cancelScheduledEmail(id);
       }
       return newsletter;
