@@ -122,8 +122,9 @@ export class NewslettersService {
     // Cancel the scheduled email if the scheduledAt field is removed or a new one is provided
     if (
       (!scheduledAt && newsletter.scheduledAt) ||
-      new Date(scheduledAt).toISOString() !==
-        newsletter.scheduledAt?.toISOString()
+      (scheduledAt &&
+        new Date(scheduledAt).toISOString() !==
+          newsletter.scheduledAt?.toISOString())
     ) {
       await this.emailSchedulingService.cancelScheduledEmail(id);
     }
