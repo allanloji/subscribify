@@ -20,8 +20,6 @@ Subscribify is a project that enables users to craft and dispatch newsletters ef
 - Newsletter sending can be scheduled
 
 
-
-
 ## Tech Stack
 
 **Client:** React, Nextjs, Typescript, Emotion, Tanstack Query, Vitest
@@ -96,6 +94,10 @@ classDiagram
 
 
 ## Demo
+
+## Important note for demo
+The email sending is disabled right now as the aws SES account is still on validation for prod usage, currently it is on sandbox mode allowing the email sending to specific emails.
+
 ![Screenshot from 2024-02-21 16-49-03](https://github.com/allanloji/subscribify/assets/33562292/b7392425-9039-496c-858d-1e35642976ca)
 
 [Demo link](https://subscribify-iota.vercel.app/)
